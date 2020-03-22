@@ -5,8 +5,8 @@
 }
 
 body {
-	background-color: rgb(0, 225, 255);
-	font-family: 'Roboto', Helvetica, sans-serif;
+	background-color:  #F3F3F3;
+	font-family: 'Sen', sans-serif;
 }
 
 .app {
@@ -44,15 +44,17 @@ header {
 	height: 100%;
 	min-height: 150px;
 
-	background-color: rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	background-color: rgba(253, 253, 253, 100);
 	margin: 0 15px;
 	padding: 8px;
 	transition: all 0.2s linear;
 }
 
 .lists .list .list-item {
+	font-family: 'Roboto', sans-serif;
 	background-color: #F3F3F3;
-	border-radius: 8px;
+	border-radius: 10px;
 	padding: 5px 10px;
 	text-align: center;
 	margin: 1px 0px;
