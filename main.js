@@ -1,5 +1,9 @@
+//Code snippet that allows the list items to be dragged into different boxes. 
+//I pulled it from this Youtube video: https://www.youtube.com/watch?v=tZ45HZAkbLc
 const list_items = document.querySelectorAll('.list-item');
 const lists = document.querySelectorAll('.list');
+
+
 
 let draggedItem = null;
 
@@ -43,3 +47,27 @@ for (let i = 0; i < list_items.length; i++) {
         });
     }
 }
+//var browserify = require('browserify');
+
+//var results = Papa.parse(Test.csv);
+
+/*Papa.parse("Test.csv", {
+	complete: function(results,file) {
+        console.log(results);
+        console.log(results.data[0])
+	}
+});
+*/
+
+var data;
+	$.ajax({
+	  type: "GET",  
+	  url: "./Test.csv",
+	  dataType: "text",       
+	  success: function(response)  
+	  {
+        data = $.csv.toArrays(response);
+        console.log(data)
+	  }   
+	});
+
