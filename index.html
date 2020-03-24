@@ -11,32 +11,35 @@
 	<link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto">
 	<link rel="stylesheet" href="main.css" />
+
+
 </head>
 <body>
 	
 	<div class="app">
+		<br>
 		<header>
-			<h1 style="font-size:50px">SCHEDULER</h1>
+			<h1 style="font-size:50px">Scheduler</h1>
+			
 		</header>
+		<header class="subheader">
+			<h2>for UC Berkeley</h2> 
+		</header>
+		<br>
 		<header>
 			<h1>Classes</h1>
 		</header>
 		<div class="lists">
 
-			<div class="list">
-				<div class="list-item" draggable="true">List item 1</div>
-				<div class="list-item" draggable="true">List item 2</div>
-				<div class="list-item" draggable="true">List item 3</div>
-				<div class="list-item" draggable="true">List item 1</div>
-				<div class="list-item" draggable="true">List item 2</div>
-				<div class="list-item" draggable="true">List item 3</div>
+			<div class="list" id="lowerDivs">
 			</div>
-			<div class="list"></div>
-			<div class="list"></div>
+			<div class="list" id="upperDivs"></div>
+			<div class="list" id="breadths"></div>
 
 
 		</div>
 	</div>
+
 	<div class="app">
 		<header>
 			<h1>Your Schedule</h1>
@@ -46,15 +49,12 @@
 			<div class="list"></div>
 			<div class="list"></div>
 		</div>
-	<br>
 
 
 	</div>
+
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 	<script src="./src/jquery.csv.min.js"></script>
-	<!--<script src="./PapaParse-5.0.2/papaparse.min.js" type="module" ></script>-->
-
 	<script src="main.js"></script>
-
 </body>
 </html>

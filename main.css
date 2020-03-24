@@ -5,8 +5,9 @@
 }
 
 body {
-	background-color:  #F3F3F3;
+	background-color:  #EEEEEE;
 	font-family: 'Sen', sans-serif;
+	
 }
 
 .app {
@@ -15,6 +16,7 @@ body {
 
 	width: 100vw;
 	height: 50vh;
+	margin-bottom: 50px;
 }
 
 header {
@@ -24,6 +26,11 @@ header {
 	height: 60px;
 }
 
+header.subheader	{
+	height:17.5px;
+	color:#005eff;
+}
+
 .lists {
 	display: flex;
 	flex: 1;
@@ -31,12 +38,17 @@ header {
 	align-items: center;
 	justify-content: center;
 	/*overflow-x: scroll;*/
+
+
 }
 
 .lists .list {
 	display: flex;
 	flex-flow: column;
 	flex: 1;
+	overflow-y: scroll;
+	overflow-x: scroll;
+
 
 	width: 100%;
 	min-width: 250px;
@@ -53,9 +65,14 @@ header {
 
 .lists .list .list-item {
 	font-family: 'Roboto', sans-serif;
-	background-color: #F3F3F3;
+	background-color: #EEEEEE;
+	color:  black;
 	border-radius: 10px;
 	padding: 5px 10px;
 	text-align: center;
 	margin: 1px 0px;
 }
+
+h1 {
+	color: black;
+  }
