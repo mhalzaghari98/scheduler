@@ -1,92 +1,77 @@
-//I am using a jquery library to read the csv file, and then convert it into an array that I can use
+//I am using a jquery library to read the json file, and then convert it into an object that I can use
 var data;
 $.ajax({
-type: "GET",  
-url: "./Test.csv",
-dataType: "text",       
-success: function(response)  
-{
-//Converting csv file to array
-data = $.csv.toArrays(response);
+    type: "GET",  
+    url: "./test.json",
+    dataType: "json",       
+    success: function(response)  
+    {
+        data = response
+        var chosenMajor = "Computer Science"
 
-console.log(data)
-var major = 'Computer Science Major'
-
-for (let i = 0; i< data.length; i++) {
-    for (let j = 0; j < data[i].length; j++) {
-        if (data[i][j] === major) {
-            j++
-            if (data[i][j] === 'Lower Divs') {
-                j++
-                while (data[i][j] != 'Upper Divs') {
-                    $('#lowerDivs').append('<div class="list-item" draggable="true">' + data[i][j] + '</div>');
-                    j++
-                }
-            } if (data[i][j] === 'Upper Divs') {
-                j++
-                while (data[i][j] != 'Breadths') {
-                    $('#upperDivs').append('<div class="list-item" draggable="true">' + data[i][j] + '</div>');
-                    j++
-                }
-            } if (data[i][j] === 'Breadths') {
-                j++
-                while (data[i][j] != 'End') {
-                    $('#breadths').append('<div class="list-item" draggable="true">' + data[i][j] + '</div>');
-                    j++
-                }
+        var majorObj = data["majors"][chosenMajor]
+        for (const courseType in majorObj) {
+            var currDiv = $("#" + courseType)
+            if (currDiv.length == 0) {
+                console.log("error: courseType '" + courseType + "' is an invalid div")
+                continue
             }
+            majorObj[courseType].forEach( function(item, index) {
+                currDiv.append('<div class="list-item" draggable="true">' + item + '</div>')
+            });
         }
-    }
-}
-    
+
+        makeItemsDraggable();
+    }   
+});
+
 //Code snippet that allows the list items to be dragged into different boxes. 
 //I pulled it from this Youtube video: https://www.youtube.com/watch?v=tZ45HZAkbLc
 
-const list_items = document.querySelectorAll('.list-item');
-const lists = document.querySelectorAll('.list');
+function makeItemsDraggable() {
 
-let draggedItem = null;
+    const list_items = document.querySelectorAll('.list-item');
+    const lists = document.querySelectorAll('.list');
 
-for (let i = 0; i < list_items.length; i++) {
-    const item = list_items[i];
+    let draggedItem = null;
 
-    item.addEventListener('dragstart', function () {
-        draggedItem = item;
-        setTimeout(function () {
-            item.style.display = 'none';
-        }, 0)
-    });
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
 
-    item.addEventListener('dragend', function () {
-        setTimeout(function () {
-            draggedItem.style.display = 'block';
-            draggedItem = null;
-        }, 0);
-    })
-    for (let j = 0; j < lists.length; j ++) {
-        const list = lists[j];
-
-        list.addEventListener('dragover', function (e) {
-            e.preventDefault();
+        item.addEventListener('dragstart', function () {
+            draggedItem = item;
+            setTimeout(function () {
+                item.style.display = 'none';
+            }, 0)
         });
 
-        list.addEventListener('dragenter', function (e) {
-            e.preventDefault();
-            this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
-        });
+        item.addEventListener('dragend', function () {
+            setTimeout(function () {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }, 0);
+        })
+        for (let j = 0; j < lists.length; j ++) {
+            const list = lists[j];
 
-        list.addEventListener('dragleave', function (e) {
-            this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-        });
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
 
-        list.addEventListener('drop', function (e) {
-            console.log('drop');
-            this.append(draggedItem);
-            this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-        });
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log('drop');
+                this.append(draggedItem);
+                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+            });
+        }
     }
-
 }
-//The brackets at the end include the cvs to jquery so that I can have the data I append add the event listeners. 
-}   
-});

@@ -1,0 +1,26 @@
+{
+    "majors": {
+        "Computer Science": {
+            "lowerDivs": [
+                "CS61A", "CS61B", "CS61C", "CS70", "MATH1B", "MATH54"
+            ], 
+            "upperDivs": [
+                "CS154", "CS160", "CS161", "CS162", "CS168", "CS169", "CS170", "CS186", "CS188", "CS189"
+            ],
+            "breadths": [
+                "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
+            ]        
+        },
+        "Data Science": {
+            "lowerDivs": [
+                "DATA8", "DATA100", "MATH1B"
+            ], 
+            "upperDivs": [
+                "STAT134"
+            ],
+            "breadths": [
+                "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
+            ]        
+        }
+    }
+}
