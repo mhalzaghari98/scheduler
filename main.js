@@ -1,5 +1,5 @@
-//I am using a jquery library to read the json file, and then convert it into an object that I can use
 var data;
+//I am using a jquery library to read the json file, and then convert it into an object that I can use
 $.ajax({
     type: "GET",  
     url: "./test.json",
@@ -7,21 +7,12 @@ $.ajax({
     success: function(response)  
     {
         data = response
-        var chosenMajor = "Computer Science"
-
-        var majorObj = data["majors"][chosenMajor]
-        for (const courseType in majorObj) {
-            var currDiv = $("#" + courseType)
-            if (currDiv.length == 0) {
-                console.log("error: courseType '" + courseType + "' is an invalid div")
-                continue
-            }
-            majorObj[courseType].forEach( function(item, index) {
-                currDiv.append('<div class="list-item" draggable="true">' + item + '</div>')
-            });
+        // Populate the major list dropdown
+        var majorDropdown = $("#major-dropdown")
+        for (const major in data["majors"]) {
+            console.log(major)
+            majorDropdown.append("<option value='" + major + "'>" + major + "</option>")
         }
-
-        makeItemsDraggable();
     }   
 });
 
@@ -68,10 +59,44 @@ function makeItemsDraggable() {
             });
 
             list.addEventListener('drop', function (e) {
-                console.log('drop');
-                this.append(draggedItem);
+                // This is a workaround for drop. For some reason, draggedItem includes 'null' items from previous major selection
+                console.log("drop")
+                if (draggedItem != null) {
+                    this.append(draggedItem);
+                }
                 this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
             });
         }
     }
 }
+
+$("#major-dropdown").change(function() {
+    var chosenMajor = $("#major-dropdown option:selected").text()
+    console.log(chosenMajor)
+
+    // Clear and reformat every list
+    $(".list").empty()
+    $(".list").css("background-color", "rgba(253, 253, 253, 100)")
+    $(".list-item").remove()
+
+    // Basically when chosenMajor == None 
+    if (!(chosenMajor in data["majors"])) {
+        return
+    }
+
+    var majorObj = data["majors"][chosenMajor]
+    for (const courseType in majorObj) {
+        var currDiv = $("#" + courseType)
+        if (currDiv.length == 0) {
+            console.log("error: courseType '" + courseType + "' is an invalid div")
+            continue
+        }
+        str = ""
+        majorObj[courseType].forEach( function(item, index) {
+            str += '<div class="list-item" draggable="true">' + item + '</div>'
+        });
+        currDiv.html(str)
+    }
+
+    makeItemsDraggable();
+})

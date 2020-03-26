@@ -7,14 +7,14 @@
 body {
 	background-color:  #EEEEEE;
 	font-family: 'Sen', sans-serif;
-	
+	overflow-x: hidden;
 }
 
 .app {
 	display: flex;
-	flex-flow: column;
-
-	width: 100vw;
+	flex-direction: column;
+	justify-content: center;
+	width: 99vw;
 	height: 50vh;
 	margin-bottom: 50px;
 }
@@ -31,18 +31,48 @@ header.subheader	{
 	color:#005eff;
 }
 
-.lists {
+#degree-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-content: center;
+	font: bold 22px Sen, sans-serif;
+}
+
+select {
+	font: bold 18px Sen, sans-serif;
+	width: 12vw;
+}
+  
+select:focus {
+	outline: none;
+}
+
+#major-dropdown {
+	margin: 8px;
+	padding: 4px;
+}
+
+
+.class-lists {
 	display: flex;
 	flex: 1;
-	width: 100%;
+	width: auto;
 	height: 100px;
 	align-items: center;
 	justify-content: center;
-
-
 }
 
-.lists .list {
+.schedule-lists {
+	display: flex;
+	flex: 1;
+	width: auto;
+	height: 100px;
+	align-items: center;
+	justify-content: center;
+}
+
+.list {
 	display: flex;
 	flex-flow: column;
 	flex: 1;
@@ -62,7 +92,7 @@ header.subheader	{
 	transition: all 0.2s linear;
 }
 
-.lists .list .list-item {
+.list .list-item {
 	font-family: 'Roboto', sans-serif;
 	background-color: #EEEEEE;
 	color:  black;
@@ -70,7 +100,6 @@ header.subheader	{
 	padding: 5px 10px;
 	text-align: center;
 	margin: 1px 0px;
-
 }
 
 h1 {
