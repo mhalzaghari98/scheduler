@@ -5,28 +5,19 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>Scheduler</title>
-
-	<link rel="stylesheet"
-		  href="https://fonts.googleapis.com/css?family=Sen:700">
-	<link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Roboto">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sen:700">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<link rel="stylesheet" href="main.css" />
-
-
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="./src/jquery.csv.min.js"></script>
+	<script src="main.js"></script>
 </head>
 <body>
-	
 	<div class="app">
-		<br>
 		<header>
-			<h1 style="font-size:50px">Scheduler</h1>
-			
+			<h1>Scheduler</h1>
+			<h3>for UC Berkeley</h3> 
 		</header>
-		<header class="subheader">
-			<h2>for UC Berkeley</h2> 
-		</header>
-		<br>
-
 		<div id="degree-container">
 			<div class="filter-container" id="major-filter">
 				Major: 
@@ -35,41 +26,27 @@
 				<img src="img/refresh-symbol.png" id="refresh-symbol"></img>
 			</div>
 		</div>
-
 		<header>
-			<h1>Classes</h1>
+			<h2>Classes</h2>
 		</header>
-
 		<div class="titles">
-		<h3 class="smallTitle">Test</h3>
-		<h3 class="smallTitle">Test</h3>
-		<h3 class="smallTitle">Test</h3>
+			<h3 class="smallTitle">Test</h3>
+			<h3 class="smallTitle">Test</h3>
+			<h3 class="smallTitle">Test</h3>
 		</div>
-
 		<div class="class-lists">
 			<div class="list" id="lowerDivs"></div>
 			<div class="list" id="upperDivs"></div>
 			<div class="list" id="breadths"></div>
-
-
 		</div>
-	</div>
-
-	<div class="app">
 		<header>
-			<h1>Your Schedule</h1>
+			<h2>Your Schedule</h2>
 		</header>
 		<div class="schedule-lists">
 			<div class="list" id="list1"></div>
 			<div class="list" id="list2"></div>
 			<div class="list" id="list3"></div>
 		</div>
-
-
 	</div>
-
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script src="./src/jquery.csv.min.js"></script>
-	<script src="main.js"></script>
 </body>
 </html>
