@@ -41,7 +41,7 @@ header.subheader	{
 
 select {
 	font: bold 18px Sen, sans-serif;
-	width: 12vw;
+	width: auto;
 }
   
 select:focus {

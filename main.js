@@ -51,6 +51,7 @@ function makeItemsDraggable() {
 
             list.addEventListener('dragover', function (e) {
                 e.preventDefault();
+                this.style.backgroundColor = 'rgba(0, 0, 0, 0.2)';
             });
 
             list.addEventListener('dragenter', function (e) {
@@ -59,7 +60,7 @@ function makeItemsDraggable() {
             });
 
             list.addEventListener('dragleave', function (e) {
-                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+                this.style.backgroundColor = 'white';
             });
 
             list.addEventListener('drop', function (e) {
@@ -67,18 +68,61 @@ function makeItemsDraggable() {
                 console.log("drop")
                 if (draggedItem != null) {
                     this.append(draggedItem);
+                    saveLists()
                 }
-                this.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+                this.style.backgroundColor = 'white';
             });
         }
     }
 }
 
-function updateLists(major) {
-    // Clear and reformat every list
+function saveLists() {
+    var listObj = {}
+    $('.list').each(function() {
+        var key = $(this).attr('id')
+        var courses = []
+        $(this).children().each(function () {
+            courses.push($(this).attr('id'))
+        });
+        listObj[key] = courses
+    });
+    var dropdownValue = $("#major-dropdown option:selected").text()
+    localStorage[dropdownValue] = JSON.stringify(listObj)
+}
+
+function loadLists(dropdownValue) {
+    if (localStorage[dropdownValue]) {
+        var listJSON = localStorage[dropdownValue]
+        var listObj = JSON.parse(listJSON)
+        for (const listID in listObj) {
+            var div = $("#" + listID)
+            var courses = listObj[listID]
+            var str = ""
+            courses.forEach( function(item, index) {
+                str += '<div class="list-item" draggable="true" id="'+item+'">'+item+'</div>'
+            })
+            div.html(str)
+        }
+        console.log(listObj)
+    }
+    makeItemsDraggable()
+}
+
+function clearLists() {
     $(".list").empty()
     $(".list").css("background-color", "rgba(253, 253, 253, 100)")
     $(".list-item").remove()
+}
+
+function updateLists(major) {
+    // Clear and reformat every list
+    clearLists()
+
+    // Check for cached lists
+    if (localStorage[major]) {
+        loadLists(major)
+        return
+    }
 
     // Basically when chosenMajor == None 
     if (!(major in data["majors"])) {
@@ -94,7 +138,7 @@ function updateLists(major) {
         }
         var str = ""
         majorObj[courseType].forEach( function(item, index) {
-            str += '<div class="list-item" draggable="true">' + item + '</div>'
+            str += '<div class="list-item" draggable="true" id="'+item+'">'+item+'</div>'
         });
         currDiv.html(str)
     }
@@ -107,4 +151,5 @@ $("#major-dropdown").change(function() {
     console.log(chosenMajor)
 
     updateLists(chosenMajor)
+    saveLists()
 })
