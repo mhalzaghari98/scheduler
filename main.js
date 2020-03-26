@@ -16,6 +16,10 @@ $.ajax({
             $("#major-dropdown").append("<option value='" + major + "'>" + major + "</option>")
         }
 
+        if (localStorage["lastDropdown"]) {
+            defaultMajor = localStorage["lastDropdown"]
+        }
+
         $("#major-dropdown").val(defaultMajor).change()
     }   
 });
@@ -152,4 +156,16 @@ $("#major-dropdown").change(function() {
 
     updateLists(chosenMajor)
     saveLists()
+    localStorage["lastDropdown"] = chosenMajor
 })
+
+$("#refresh-symbol").click(function() {
+    refreshLists()
+})
+
+function refreshLists() {
+    var chosenMajor = $("#major-dropdown option:selected").text()
+
+    localStorage.clear()
+    updateLists(chosenMajor)
+}
