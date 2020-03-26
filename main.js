@@ -4,15 +4,19 @@ $.ajax({
     type: "GET",  
     url: "./test.json",
     dataType: "json",       
-    success: function(response)  
-    {
+    success: function(response)  {
         data = response
+
+        var defaultMajor = ""
         // Populate the major list dropdown
-        var majorDropdown = $("#major-dropdown")
         for (const major in data["majors"]) {
-            console.log(major)
-            majorDropdown.append("<option value='" + major + "'>" + major + "</option>")
+            if (defaultMajor === "") {
+                defaultMajor = major
+            }
+            $("#major-dropdown").append("<option value='" + major + "'>" + major + "</option>")
         }
+
+        $("#major-dropdown").val(defaultMajor).change()
     }   
 });
 
@@ -70,28 +74,25 @@ function makeItemsDraggable() {
     }
 }
 
-$("#major-dropdown").change(function() {
-    var chosenMajor = $("#major-dropdown option:selected").text()
-    console.log(chosenMajor)
-
+function updateLists(major) {
     // Clear and reformat every list
     $(".list").empty()
     $(".list").css("background-color", "rgba(253, 253, 253, 100)")
     $(".list-item").remove()
 
     // Basically when chosenMajor == None 
-    if (!(chosenMajor in data["majors"])) {
+    if (!(major in data["majors"])) {
         return
     }
 
-    var majorObj = data["majors"][chosenMajor]
+    var majorObj = data["majors"][major]
     for (const courseType in majorObj) {
         var currDiv = $("#" + courseType)
         if (currDiv.length == 0) {
             console.log("error: courseType '" + courseType + "' is an invalid div")
             continue
         }
-        str = ""
+        var str = ""
         majorObj[courseType].forEach( function(item, index) {
             str += '<div class="list-item" draggable="true">' + item + '</div>'
         });
@@ -99,4 +100,11 @@ $("#major-dropdown").change(function() {
     }
 
     makeItemsDraggable();
+}
+
+$("#major-dropdown").change(function() {
+    var chosenMajor = $("#major-dropdown option:selected").text()
+    console.log(chosenMajor)
+
+    updateLists(chosenMajor)
 })
