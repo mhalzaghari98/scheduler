@@ -14,6 +14,7 @@ body {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	align-items: center;
 	width: 100vw;
 	height: auto;
 	margin-top: 20px;
@@ -58,16 +59,16 @@ select:focus {
 	outline: none;
 }
 
-#major-dropdown {
+.filter {
 	margin: 6px;
 	padding: 4px;
+	margin-right: 12px;
 }
 
 #refresh-symbol {
 	height: 20px;
 	width: 24px;
-	margin-bottom: -4px;
-	margin-left: 8px;
+	margin-top: 12px;
 	border-radius: 50%;
 	opacity: 0.6;
 	transition: 0.2s ease;
@@ -82,9 +83,8 @@ select:focus {
 .class-lists {
 	display: flex;
 	flex-direction: row;
-	width: auto;
 	height: 22vh;
-	min-height: 120px;
+	width: 66vw;
 	align-items: center;
 	justify-content: center;
 	padding-bottom: 12px;
@@ -92,9 +92,8 @@ select:focus {
 
 .schedule-lists {
 	display: flex;
-	flex: 1;
-	width: auto;
-	height: auto;
+	flex-direction: row;
+	width: 66vw;
 	align-items: center;
 	justify-content: center;
 }
@@ -104,10 +103,9 @@ select:focus {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-content: center;
-	overflow: auto;
-	width: 100%;
-	min-width: 20vw;
-	max-width: 350px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	width: 34%;
 	height: inherit;
 	border: 5px solid rgba(253, 253, 253, 100);
 	border-radius: 10px;
@@ -132,6 +130,9 @@ select:focus {
 
 .schedule-lists .list {
 	height: 120px;
+	width: 25%;
+	min-width: auto;
+	max-width: auto;
 }
 
 .list .list-item {
@@ -159,7 +160,7 @@ select:focus {
 	flex-direction: row;
 	justify-content: center;
 	align-content: center;
-	width: 100%;
+	width: 66vw;
 	height: 40px;
 }
 
@@ -167,9 +168,7 @@ select:focus {
 	display: flex;
 	flex-flow: column;
 	flex: 1;
-	width: 100%;
-	min-width: 20vw;
-	max-width: 350px;
+	width: 34%;
 	height: 15px;
 	margin: 0 16px;
 	padding: 8px;

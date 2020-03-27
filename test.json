@@ -22,5 +22,18 @@
                 "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
             ]        
         }
+    },
+    "minors": {
+        "Data Science": {
+            "lowerDivs": [
+                "DATA8", "CS88", "ENGIN7", "MATH10B"
+            ], 
+            "upperDivs": [
+                "DATA 100"
+            ],
+            "breadths": [
+                "Ethics", "Elective", "Elective"
+            ]
+        }
     }
 }
