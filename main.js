@@ -22,21 +22,6 @@ $(document).ready(function() {
             }
     
             $("#major-dropdown").val(defaultMajor).change()
-
-            // Populate the minor list dropdown
-            var defaultMinor = ""
-            // Populate the major list dropdown
-            for (const minor in data["minors"]) {
-                if (minor != defaultMajor) {
-                    $("#minor-dropdown").append("<option value='" + minor + "'>" + minor + "</option>")
-                }
-            }
-    
-            /*
-            if (localStorage["lastDropdown"]) {
-                defaultMajor = localStorage["lastDropdown"]
-            }
-            */
         }   
     });
     
@@ -169,16 +154,6 @@ $(document).ready(function() {
     $("#major-dropdown").change(function() {
         var chosenMajor = $("#major-dropdown option:selected").text()
         console.log(chosenMajor)
-
-        // Populate the minor list dropdown
-        $("#minor-dropdown").empty()
-        $("#minor-dropdown").append("<option value=' '> </option>")
-        var defaultMinor = ""
-        for (const minor in data["minors"]) {
-            if (minor != chosenMajor) {
-                $("#minor-dropdown").append("<option value='" + minor + "'>" + minor + "</option>")
-            }
-        }
     
         updateLists(chosenMajor)
         saveLists()
