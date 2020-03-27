@@ -136,6 +136,7 @@ select:focus {
 
 .schedule-lists .list {
 	height: 155px;
+	margin-bottom: 5px;
 }
 
 .list .list-item {
