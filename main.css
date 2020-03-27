@@ -32,12 +32,14 @@ header {
 header h1 {
 	font-size: 48px;
 	margin-bottom: -5px;
-	
 }
 
 header h2 {
 	font-size: 32px;
-	height: 20px;
+}
+
+.main-title {
+	margin-bottom: 4px;
 }
 
 header h3 {
@@ -86,9 +88,7 @@ select:focus {
 .class-lists {
 	display: flex;
 	flex-direction: row;
-	width: auto;
-	min-width: 10vw;
-	max-width: 100px;
+	width: 66vw;
 	height: 22vh;
 	min-height: 120px;
 	align-items: center;
@@ -98,12 +98,11 @@ select:focus {
 
 .schedule-lists {
 	display: flex;
-	flex: 1;
-	min-width: 10vw;
-	max-width: 100px;
+	flex-direction: row;
+	width: 66vw;
 	height: auto;
 	align-items: center;
-	justify-content: space-evenly;
+	justify-content: center;
 }
 
 .list {
@@ -112,9 +111,7 @@ select:focus {
 	justify-content: flex-start;
 	align-content: center;
 	overflow: auto;
-	width: auto;
-	min-width: 20vw;
-	max-width: 100px;
+	width: 34%;
 	height: inherit;
 	border: 5px solid rgba(253, 253, 253, 100);
 	border-radius: 10px;
@@ -141,8 +138,6 @@ select:focus {
 	height: 155px;
 }
 
-
-
 .list .list-item {
 	font-family: 'Roboto', sans-serif;
 	background-color: rgba(0, 0, 0, 0.06);
@@ -168,20 +163,19 @@ select:focus {
 	flex-direction: row;
 	justify-content: center;
 	align-content: center;
-	width: 100%;
+	width: 66vw;
 	height: auto;
 }
 
-.titles .smallTitle {
+.smallTitle {
 	display: flex;
 	flex-flow: column;
 	flex: 1;
 	width: 100%;
-	min-width: 20vw;
-	max-width: 350px;
 	height: auto;
 	margin: 0 16px;
 	padding: 10px;
+	padding-top: 4px;
 	transition: all 0.2s linear;
 	align-items: center;
 }
