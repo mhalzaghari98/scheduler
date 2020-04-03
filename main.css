@@ -110,7 +110,8 @@ select:focus {
 	flex-direction: column;
 	justify-content: flex-start;
 	align-content: center;
-	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: auto;
 	width: 34%;
 	height: inherit;
 	border: 5px solid rgba(253, 253, 253, 100);
@@ -163,15 +164,13 @@ select:focus {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	align-content: center;
+	align-items: center;
 	width: 66vw;
 	height: auto;
 }
 
 .smallTitle {
-	display: flex;
-	flex-flow: column;
-	flex: 1;
+	text-align: center;
 	width: 100%;
 	height: auto;
 	margin: 0 16px;
