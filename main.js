@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var data;
+    var data = {}
     //I am using a jquery library to read the json file, and then convert it into an object that I can use
     $.ajax({
         type: "GET",  
@@ -24,17 +24,62 @@ $(document).ready(function() {
             $("#major-dropdown").val(defaultMajor).change()
         }   
     });
+
+    var draggedItem = null;
+    makeListsDroppable()
     
     //Code snippet that allows the list items to be dragged into different boxes. 
     //I pulled it from this Youtube video: https://www.youtube.com/watch?v=tZ45HZAkbLc
+
+    function makeListsDroppable() {
+
+        var lists = $('.list');
+
+        for (let j = 0; j < lists.length; j ++) {
+            const list = lists[j];
+
+            list.addEventListener('dragover', function (e) {
+                e.preventDefault();
+                // this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
+                var courseType = $(draggedItem).attr("id").split("+")[0]
+                if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
+                    this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
+                } else {
+                    this.style.backgroundColor = 'rgb(255, 196, 196)';
+                }
+            });
+
+            list.addEventListener('dragenter', function (e) {
+                e.preventDefault();
+                var courseType = $(draggedItem).attr("id").split("+")[0]
+                if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
+                    this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
+                } else {
+                    this.style.backgroundColor = 'rgb(255, 196, 196)';
+                }
+            });
+
+            list.addEventListener('dragleave', function (e) {
+                this.style.backgroundColor = 'white';
+            });
+
+            list.addEventListener('drop', function (e) {
+                console.log("drop")
+                var courseType = $(draggedItem).attr("id").split("+")[0]
+                if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
+                    // console.log("appended item to lower div")
+                    this.append(draggedItem);
+                    saveLists()
+                }
+                this.style.backgroundColor = 'white';
+            });
+        }
+    }
     
     function makeItemsDraggable() {
     
-        const list_items = document.querySelectorAll('.list-item');
-        const lists = document.querySelectorAll('.list');
-    
-        let draggedItem = null;
-    
+        var list_items = $('.list-item');
+        
         for (let i = 0; i < list_items.length; i++) {
             const item = list_items[i];
     
@@ -51,33 +96,6 @@ $(document).ready(function() {
                     draggedItem = null;
                 }, 0);
             })
-            for (let j = 0; j < lists.length; j ++) {
-                const list = lists[j];
-    
-                list.addEventListener('dragover', function (e) {
-                    e.preventDefault();
-                    this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
-                });
-    
-                list.addEventListener('dragenter', function (e) {
-                    e.preventDefault();
-                    this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
-                });
-    
-                list.addEventListener('dragleave', function (e) {
-                    this.style.backgroundColor = 'white';
-                });
-    
-                list.addEventListener('drop', function (e) {
-                    // This is a workaround for drop. For some reason, draggedItem includes 'null' items from previous major selection
-                    console.log("drop")
-                    if (draggedItem != null) {
-                        this.append(draggedItem);
-                        saveLists()
-                    }
-                    this.style.backgroundColor = 'white';
-                });
-            }
         }
     }
     
@@ -104,11 +122,11 @@ $(document).ready(function() {
                 var courses = listObj[listID]
                 var str = ""
                 courses.forEach( function(item, index) {
-                    str += '<div class="list-item" draggable="true" id="'+item+'">'+item+'</div>'
+                    var courseName = item.split("+")[1]
+                    str += '<div class="list-item" draggable="true" id="'+item+'">'+courseName+'</div>'
                 })
                 div.html(str)
             }
-            console.log(listObj)
         }
         makeItemsDraggable()
     }
@@ -143,7 +161,7 @@ $(document).ready(function() {
             }
             var str = ""
             majorObj[courseType].forEach( function(item, index) {
-                str += '<div class="list-item" draggable="true" id="'+item+'">'+item+'</div>'
+                str += '<div class="list-item" draggable="true" id="'+courseType+'+'+item+'">'+item+'</div>'
             });
             currDiv.html(str)
         }
