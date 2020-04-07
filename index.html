@@ -13,20 +13,47 @@
 	<script src="main.js"></script>
 </head>
 <body>
-	<div class="app">
+	<div class="app" id="app">
 		<header>
 			<h1>Scheduler</h1>
 			<h3>for UC Berkeley</h3> 
 		</header>
 		<div id="degree-container">
-			<div class="filter-container" id="major-filter">
-				Major: 
-				<select class="filter" id="major-dropdown" direction="rtl">
-				</select>
-				<img src="img/refresh-symbol.png" id="refresh-symbol"></img>
+			<div class="all-filters">
+				<div class="filter-container" id="major-filter">
+					Major: 
+					<select class="filter" id="major-dropdown" direction="rtl">
+					</select>
+				</div>
+				<div class="filter-container" id="major2-filter">
+					Major:
+					<select class="filter" id="major2-dropdown" direction="rtl">
+					</select>
+				</div>
+				<div class="filter-container" id="minor-filter">
+					Minor:
+					<select class="filter" id="minor-dropdown" direction="rtl">
+					</select>
+				</div>
+			</div>
+			<div class="toolbar-container" id="toolbar-container">
+				<div class="toolbar-element" id="refresh">
+					<img src="img/refresh-symbol.png" id="refresh-symbol"></img>
+					Reset
+				</div>
+				<div class="toolbar-element" id="export">
+					<img src="img/export.png" id="export-symbol"></img>
+					Export
+				</div>
+				<label for="file">
+					<div class="toolbar-element" id="import">
+							<img src="img/import.png" id="import-symbol"></img>
+						Import
+					</div>
+				</label>
 			</div>
 		</div>
-		<header class="main-title">
+		<header class="main-title" id="classes-title">
 			<h2>Classes</h2>
 		</header>
 		<div class="titles">
@@ -39,39 +66,42 @@
 			<div class="list" id="upperDivs"></div>
 			<div class="list" id="breadths"></div>
 		</div>
-		<header class="main-title">
-			<h2>Your Schedule</h2>
-		</header>
-		<div class="titles">
-			<h3 class="smallTitle">Freshman</h3>
-			<h3 class="smallTitle">Sophomore</h3>
-			<h3 class="smallTitle">Junior</h3>
-			<h3 class="smallTitle">Senior</h3>
+		<div id="schedule-container">
+			<header class="main-title">
+				<h2>Schedule</h2>
+			</header>
+			<div class="titles">
+				<h3 class="smallTitle">Freshman</h3>
+				<h3 class="smallTitle">Sophomore</h3>
+				<h3 class="smallTitle">Junior</h3>
+				<h3 class="smallTitle">Senior</h3>
+			</div>
+			<div class="titles">
+				<h3 class="smallTitle">Fall</h3>
+				<h3 class="smallTitle">Fall</h3>
+				<h3 class="smallTitle">Fall</h3>
+				<h3 class="smallTitle">Fall</h3>
+			</div>
+			<div class="schedule-lists">
+				<div class="list" id="fa1-list"></div>
+				<div class="list" id="fa2-list"></div>
+				<div class="list" id="fa3-list"></div>
+				<div class="list" id="fa4-list"></div>
+			</div>
+			<div class="titles">
+				<h3 class="smallTitle">Spring</h3>
+				<h3 class="smallTitle">Spring</h3>
+				<h3 class="smallTitle">Spring</h3>
+				<h3 class="smallTitle">Spring</h3>
+			</div>
+			<div class="schedule-lists">
+				<div class="list" id="sp1-list"></div>
+				<div class="list" id="sp2-list"></div>
+				<div class="list" id="sp3-list"></div>
+				<div class="list" id="sp4-list"></div>
+			</div>
 		</div>
-		<div class="titles">
-			<h3 class="smallTitle">Fall</h3>
-			<h3 class="smallTitle">Fall</h3>
-			<h3 class="smallTitle">Fall</h3>
-			<h3 class="smallTitle">Fall</h3>
-		</div>
-		<div class="schedule-lists">
-			<div class="list" id="fa1-list"></div>
-			<div class="list" id="fa2-list"></div>
-			<div class="list" id="fa3-list"></div>
-			<div class="list" id="fa4-list"></div>
-		</div>
-		<div class="titles">
-			<h3 class="smallTitle">Spring</h3>
-			<h3 class="smallTitle">Spring</h3>
-			<h3 class="smallTitle">Spring</h3>
-			<h3 class="smallTitle">Spring</h3>
-		</div>
-		<div class="schedule-lists">
-			<div class="list" id="sp1-list"></div>
-			<div class="list" id="sp2-list"></div>
-			<div class="list" id="sp3-list"></div>
-			<div class="list" id="sp4-list"></div>
-		</div>
+		<input type="file" id="file" name="file" enctype="multipart/form-data" />
 	</div>
 </body>
 </html>
