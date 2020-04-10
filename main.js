@@ -1,5 +1,6 @@
 var data = {}
 var draggedItem = null
+var clickedItem = null
 
 $(document).ready(function() {
     //Read the json file, and then convert it into an object
@@ -29,7 +30,6 @@ $(document).ready(function() {
 
     $("#major-dropdown").change(function() {
         var chosenMajor = $("#major-dropdown option:selected").text()
-        console.log(chosenMajor)
     
         updateLists(chosenMajor)
         saveLists()
@@ -44,9 +44,24 @@ $(document).ready(function() {
         downloadJSON()
     });
 
+    $("#image").click(function() {
+        saveImage()
+    });
+
     document.getElementById('file').addEventListener('change', readFile, false);
 
     makeListsDroppable();
+
+    $(document).click(function(e) {
+        if ( $(e.target).closest('.list').length === 0 ) {
+            // cancel highlighting 
+            if (clickedItem != null) {
+                removeClickFromLists()
+                $(clickedItem).removeClass('clicked')
+                clickedItem = null
+            }
+        }
+    });
 });
     
 function makeListsDroppable() {
@@ -60,36 +75,52 @@ function makeListsDroppable() {
             // this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
             var courseType = $(draggedItem).attr("id").split("+")[0]
             if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
-                this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
+                $(this).attr("drop-active", true)
             } else {
-                this.style.backgroundColor = 'rgb(255, 196, 196)';
+                $(this).attr("drop-active", false)
             }
         });
 
         list.addEventListener('dragenter', function (e) {
             e.preventDefault();
-            var courseType = $(draggedItem).attr("id").split("+")[0]
-            if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
-                this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
-            } else {
-                this.style.backgroundColor = 'rgb(255, 196, 196)';
-            }
         });
 
         list.addEventListener('dragleave', function (e) {
-            this.style.backgroundColor = 'white';
+            $(this).removeAttr("drop-active")
         });
 
         list.addEventListener('drop', function (e) {
-            console.log("drop")
+            // console.log("drop")
             var courseType = $(draggedItem).attr("id").split("+")[0]
-            if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
+            if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType && 
+                $(draggedItem).parent().attr('id') != $(this).attr('id')) {
                 // console.log("appended item to lower div")
                 this.append(draggedItem);
                 saveLists()
             }
-            this.style.backgroundColor = 'white';
+            $(this).removeAttr("drop-active")
         });
+
+        list.addEventListener('click', function(e) {
+            if (clickedItem != null) {
+                if ($(this).attr("click-active") == "true") {
+                    this.append(clickedItem)
+                }
+                $(clickedItem).removeClass('clicked')
+                $(this).removeAttr("click-active")
+                clickedItem = null;
+                removeClickFromLists()
+                saveLists()
+            }
+        })
+    }
+}
+
+function removeClickFromLists() {
+    var lists = $('.list');
+    for (let j = 0; j < lists.length; j ++) {
+        let list = lists[j]
+        $(list).removeAttr("click-active")
     }
 }
 
@@ -103,6 +134,11 @@ function makeItemsDraggable() {
         const item = list_items[i];
 
         item.addEventListener('dragstart', function () {
+            if (clickedItem != null) {
+                removeClickFromLists()
+                $(clickedItem).removeClass('clicked')
+                clickedItem = null
+            }
             draggedItem = item;
             setTimeout(function () {
                 item.style.display = 'none';
@@ -118,9 +154,46 @@ function makeItemsDraggable() {
     }
 }
 
+function makeItemsClickable() {
+    var list_items = $('.list-item');
+    
+    for (let i = 0; i < list_items.length; i++) {
+        const item = list_items[i];
+
+        item.addEventListener('click', function (e) {
+            if (clickedItem != null) {
+                $(clickedItem).removeClass('clicked')
+                if (clickedItem == item || $(item).parent().attr("click-active") != null) {
+                    clickedItem = null
+                    removeClickFromLists()
+                    return
+                }
+            }
+            e.stopPropagation()
+            clickedItem = item;
+            $(clickedItem).addClass('list-item clicked')
+            var parentList = $(clickedItem).parent()
+
+            removeClickFromLists()
+            var lists = $('.list');
+            for (let j = 0; j < lists.length; j ++) {
+                const list = lists[j]
+                var courseType = $(clickedItem).attr("id").split("+")[0]
+                if ($(list).attr('id') != parentList.attr('id')) {
+                    if ($(list).parent().hasClass("schedule-lists") || $(list).attr("id") == courseType) {
+                        $(list).attr('click-active', true)
+                    } else {
+                        $(list).attr('click-active', false)
+                    }
+                }
+            }
+        });
+    }
+}
+
 function clearLists() {
     $(".list").empty()
-    $(".list").css("background-color", "rgba(253, 253, 253, 100)")
+    $(".list").removeAttr("click-active")
     $(".list-item").remove()
 }
 
@@ -137,7 +210,7 @@ function saveLists() {
     });
     var dropdownValue = $("#major-dropdown option:selected").text()
     listObj["major"] = dropdownValue
-    console.log(listObj)
+    // console.log(listObj)
     localStorage[dropdownValue] = JSON.stringify(listObj)
 }
     
@@ -150,7 +223,7 @@ function loadLists(dropdownValue) {
 
 function loadListsFromJSON(jsonString) {
     var listObj = JSON.parse(jsonString)
-    console.log(listObj)
+    // console.log(listObj)
     for (const listID in listObj["lists"]) {
         var div = $("#" + listID)
         var courses = listObj["lists"][listID]
@@ -162,6 +235,7 @@ function loadListsFromJSON(jsonString) {
         div.html(str)
     }
     makeItemsDraggable()
+    makeItemsClickable()
 }
     
 function updateLists(major) {
@@ -183,7 +257,7 @@ function updateLists(major) {
     for (const courseType in majorObj) {
         var currDiv = $("#" + courseType)
         if (currDiv.length == 0) {
-            console.log("error: courseType '" + courseType + "' is an invalid div")
+            // console.log("error: courseType '" + courseType + "' is an invalid div")
             continue
         }
         var str = ""
@@ -194,6 +268,7 @@ function updateLists(major) {
     }
 
     makeItemsDraggable();
+    makeItemsClickable();
 }
     
 function refreshLists() {
@@ -208,7 +283,7 @@ function downloadJSON() {
     if (localStorage[dropdownValue]) {
         jsonData = localStorage[dropdownValue]
         var data = "text/json;charset=utf-8," + encodeURIComponent(jsonData);
-        console.log(data)
+        // console.log(data)
         var a = document.createElement('a')
         a.href = "data:" + data;
         a.download = "schedule.sch"
@@ -224,7 +299,7 @@ function readFile (evt) {
     var file = files[0];           
     var reader = new FileReader();
     reader.onload = function(event) {
-      console.log(event.target.result);
+      // console.log(event.target.result);
       clearLists()
       var listObj = JSON.parse(event.target.result)
       var major = listObj["major"]
@@ -233,3 +308,26 @@ function readFile (evt) {
     }
     reader.readAsText(file)
  }
+
+ function saveImage() {
+    var container = $("#schedule-container")
+    html2canvas(container, {
+        onrendered: function(canvas) {
+            // canvas is the final rendered <canvas> element
+            var tempcanvas=document.createElement('canvas');
+            var context=tempcanvas.getContext('2d');
+            var width = container.width()
+            var height = container.height()
+            tempcanvas.width = width + 16
+            tempcanvas.height = height + 12
+            console.log(tempcanvas.width)
+            console.log(tempcanvas.height)
+            context.drawImage(canvas,0,0);
+            var link=document.createElement("a");
+            link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
+            link.download = 'screenshot.jpg';
+            // console.log(link.href)
+            link.click();
+        }
+    });
+}

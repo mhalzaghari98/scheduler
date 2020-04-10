@@ -9,6 +9,7 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
 	<link rel="stylesheet" href="main.css" />
 	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 	<script src="./src/jquery.csv.min.js"></script>
 	<script src="main.js"></script>
 </head>
@@ -37,36 +38,42 @@
 				</div>
 			</div>
 			<div class="toolbar-container" id="toolbar-container">
-				<div class="toolbar-element" id="refresh">
-					<img src="img/refresh-symbol.png" id="refresh-symbol"></img>
-					Reset
-				</div>
 				<div class="toolbar-element" id="export">
 					<img src="img/export.png" id="export-symbol"></img>
-					Export
+					<div class="toolbar-text">Export</div>
 				</div>
 				<label for="file">
 					<div class="toolbar-element" id="import">
-							<img src="img/import.png" id="import-symbol"></img>
-						Import
+						<img src="img/import.png" id="import-symbol"></img>
+						<div class="toolbar-text">Import</div>
 					</div>
 				</label>
+				<div class="toolbar-element" id="image">
+					<img src="img/image.png" id="image-symbol"></img>
+					<div class="toolbar-text">Save</div>
+				</div>
+				<div class="toolbar-element" id="refresh">
+					<img src="img/refresh-symbol.png" id="refresh-symbol"></img>
+					<div class="toolbar-text">Reset</div>
+				</div>
 			</div>
 		</div>
-		<header class="main-title" id="classes-title">
-			<h2>Classes</h2>
-		</header>
-		<div class="titles">
-			<h3 class="smallTitle">Lower Divs</h3>
-			<h3 class="smallTitle">Upper Divs</h3>
-			<h3 class="smallTitle">Breadths</h3>
+		<div id="classes-container" class="main-container">
+			<header class="main-title" id="classes-title">
+				<h2>Classes</h2>
+			</header>
+			<div class="titles">
+				<h3 class="smallTitle">Lower Divs</h3>
+				<h3 class="smallTitle">Upper Divs</h3>
+				<h3 class="smallTitle">Breadths</h3>
+			</div>
+			<div class="class-lists">
+				<div class="list" id="lowerDivs"></div>
+				<div class="list" id="upperDivs"></div>
+				<div class="list" id="breadths"></div>
+			</div>
 		</div>
-		<div class="class-lists">
-			<div class="list" id="lowerDivs"></div>
-			<div class="list" id="upperDivs"></div>
-			<div class="list" id="breadths"></div>
-		</div>
-		<div id="schedule-container">
+		<div id="schedule-container" class="main-container">
 			<header class="main-title">
 				<h2>Schedule</h2>
 			</header>
