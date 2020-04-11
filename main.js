@@ -163,9 +163,13 @@ function makeItemsClickable() {
         item.addEventListener('click', function (e) {
             if (clickedItem != null) {
                 $(clickedItem).removeClass('clicked')
-                if (clickedItem == item || $(item).parent().attr("click-active") != null) {
+                if (clickedItem == item || $(item).parent().attr("click-active") == "false") {
+                    console.log("here")
                     clickedItem = null
                     removeClickFromLists()
+                    return
+                }
+                if ($(item).parent().attr("click-active") == "true") {
                     return
                 }
             }
