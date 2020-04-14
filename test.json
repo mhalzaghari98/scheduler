@@ -11,12 +11,25 @@
                 "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
             ]        
         },
+
         "Data Science": {
             "lowerDivs": [
-                "DATA8", "DATA100", "MATH1B"
+                "DATA8","Calculus I", "MATH1B", "Linear Algebra", "Program Structures","CS61B","Domain Emphasis"
             ], 
             "upperDivs": [
-                "STAT134"
+                "DATA100", "Computational & Inferential Depth", "Computational & Inferential Depth", "Probability","Modeling, Learning, and Decision-Making", "Human Contexts and Ethics", "Domain Emphasis","Domain Emphasis"
+            ],
+            "breadths": [
+                "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
+            ]        
+        },
+
+        "Economics": {
+            "lowerDivs": [
+                "Introductory Economics", "Calculus I", "Calculus II", "Statistics"
+            ], 
+            "upperDivs": [
+                "Microeconomics", "Macroeconomics", "Econometrics", "Elective", "Elective","Elective","Elective","Elective"
             ],
             "breadths": [
                 "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
