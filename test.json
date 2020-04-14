@@ -2,19 +2,19 @@
     "majors": {
         "Computer Science": {
             "lowerDivs": [
-                "CS61A", "CS61B", "CS61C", "CS70", "MATH1B", "MATH54"
+                "COMPSCI 61A", "COMPSCI 61B", "COMPSCI 61C", "COMPSCI 70", "MATH 1A", "MATH 1B", "MATH 54", "EECS 16A", "EECS 16B"
             ], 
             "upperDivs": [
-                "CS154", "CS160", "CS161", "CS162", "CS168", "CS169", "CS170", "CS186", "CS188", "CS189"
+                "COMPSCI 152", "COMPSCI 160", "COMPSCI 161", "COMPSCI 162", "COMPSCI 164", "COMPSCI 169", "COMPSCI 170", "CS186", "CS188", "CS189"
             ],
             "breadths": [
                 "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
-            ]        
+            ]
         },
 
         "Data Science": {
             "lowerDivs": [
-                "DATA8","Calculus I", "MATH1B", "Linear Algebra", "Program Structures","CS61B","Domain Emphasis"
+                "DATA 8","CALC I", "MATH 1B", "Linear Algebra", "Program Structures","CS61B","Domain Emphasis"
             ], 
             "upperDivs": [
                 "DATA100", "Computational & Inferential Depth", "Computational & Inferential Depth", "Probability","Modeling, Learning, and Decision-Making", "Human Contexts and Ethics", "Domain Emphasis","Domain Emphasis"
@@ -35,5 +35,12 @@
                 "Historical", "Physical", "Biological", "Philosophical", "AC Breadth", "International"
             ]        
         }
-    }
+    },
+    "minors": {
+        "Computer Science": {
+            "courses": [
+                "COMPSCI 61A", "COMPSCI 61B", "COMPSCI 61C", "COMPSCI 70", "MATH 1A", "MATH 1B", "MATH 54", "EECS 16A", "EECS 16B"
+            ]       
+        }
+    }        
 }
