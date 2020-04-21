@@ -74,7 +74,7 @@ select:focus {
 .filter {
 	margin: 6px;
 	padding: 4px;
-	min-width: 200px;
+	min-width: 250px;
 }
 
 #toolbar-container {
@@ -193,7 +193,7 @@ select:focus {
 	background-color: rgba(253, 253, 253, 100);
 	margin: 0 16px;
 	padding: 0px 4px;
-	transition: all 0.2s linear;
+	transition: background-color 0.2s linear;
 	z-index: 1;
 }
 
@@ -212,7 +212,7 @@ select:focus {
 
 .list[drop-active=true] {
 	cursor: pointer;
-	background-color: rgba(238, 238, 238, 1);
+	background-color: rgba(0, 0, 0, 0.04);
 }
 
 .list[drop-active=false] {
@@ -230,6 +230,11 @@ select:focus {
 	background-color: rgb(255, 196, 196);
 }
 
+.list[click-active=true] {
+	border: 2px dashed rgba(0, 0, 0, 0.4);
+	padding: 3px 7px;
+}
+
 .list .list-item {
 	font-family: 'Roboto', sans-serif;
 	background-color: rgba(0, 0, 0, 0.06);
@@ -239,6 +244,7 @@ select:focus {
 	margin: 1px 0px;
 	transition: 0.1s ease;
 	z-index: 2;
+	transition: background-color 0.2s ease;
 }
 
 .list .list-item:hover {
@@ -246,23 +252,93 @@ select:focus {
 	background-color: rgba(0, 0, 0, 0.12);
 }
 
-.list[click-active=true] .list-item:hover {
-	background-color: rgba(0, 0, 0, 0.06);
-}
-
-.list[click-active=false] .list-item:hover {
-	cursor: not-allowed;
-	background-color: rgba(0, 0, 0, 0.06);
-}
-
-
 .list .list-item:active {
 	cursor: pointer;
 	transform: scale(0.98);
 }
 
-.list .list-item.clicked {
-	background-color: rgba(0, 0, 0, 0.14);
+.list[click-active=false] .list-item:hover {
+	cursor: not-allowed;
+}
+
+.list-item.lowerDivs {
+	background-color: rgba(159, 255, 164, 0.5);
+}
+
+.list-item.upperDivs {
+	background-color: rgba(159, 225, 255, 0.5);
+}
+
+.list-item.breadths {
+	background-color: rgba(255, 245, 112, 0.6);
+}
+
+.list-item.minorCourses {
+	background-color: rgba(255, 194, 255, 0.7);
+}
+
+.list-item.lowerDivs:hover {
+	background-color: rgba(152, 236, 156, 0.7);
+}
+
+.list-item.upperDivs:hover {
+	background-color: rgba(151, 208, 235, 0.6);
+}
+
+.list-item.breadths:hover {
+	background-color: rgba(235, 226, 107, 0.8);
+}
+
+.list-item.minorCourses:hover {
+	background-color: rgba(231, 176, 231, 0.7);
+}
+
+.list .list-item.lowerDivs.clicked {
+	background-color: rgba(150, 226, 154, 0.8);
+}
+
+.list .list-item.upperDivs.clicked {
+	background-color: rgba(148, 199, 223, 0.7);
+}
+
+.list .list-item.breadths.clicked {
+	background-color: rgba(224, 216, 104, 0.8);
+}
+
+.list .list-item.minorCourses.clicked {
+	background-color: rgba(226, 164, 226, 0.7);
+}
+
+.list[click-active=true] .list-item.lowerDivs:hover {
+	background-color: rgba(159, 255, 164, 0.5);
+}
+
+.list[click-active=true] .list-item.upperDivs:hover {
+	background-color: rgba(159, 225, 255, 0.5);
+}
+
+.list[click-active=true] .list-item.breadths:hover {
+	background-color: rgba(255, 245, 112, 0.6);
+}
+
+.list[click-active=true] .list-item.minorCourses:hover {
+	background-color: rgba(255, 194, 255, 0.7);
+}
+
+.list[click-active=false] .list-item.lowerDivs:hover {
+	background-color: rgba(159, 255, 164, 0.5);
+}
+
+.list[click-active=false] .list-item.upperDivs:hover {
+	background-color: rgba(159, 225, 255, 0.5);
+}
+
+.list[click-active=false] .list-item.breadths:hover {
+	background-color: rgba(255, 245, 112, 0.6);
+}
+
+.list[click-active=false] .list-item.minorCourses:hover {
+	background-color: rgba(255, 194, 255, 0.7);
 }
 
 #schedule-container {
