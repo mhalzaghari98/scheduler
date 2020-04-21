@@ -1,60 +1,105 @@
 var data = {}
+var listData = {}
 var draggedItem = null
 var clickedItem = null
 
 $(document).ready(function() {
-    //Read the json file, and then convert it into an object
+    // Read the degrees.json file and store the object in data
     $.ajax({
         type: "GET",  
-        url: "./test.json",
+        url: "./degrees.json",
         dataType: "json",       
         success: function(response)  {
             data = response
-    
+
+            // Populate the first major list dropdown
             var defaultMajor = ""
-            // Populate the major list dropdown
             for (const major in data["majors"]) {
                 if (defaultMajor === "") {
                     defaultMajor = major
                 }
                 $("#major-dropdown").append("<option value='" + major + "'>" + major + "</option>")
             }
-    
-            if (localStorage["lastDropdown"]) {
-                defaultMajor = localStorage["lastDropdown"]
+
+            let firstMajor = defaultMajor
+            let secondMajor = "-"
+            let minor = "-"
+
+            // Retrieve last dropdown values from cache
+            if (localStorage["previousInputs"]) {
+                let inputs = localStorage["previousInputs"].split(";")
+                firstMajor = inputs[0]
+                secondMajor = inputs[1]
+                minor = inputs[2]
             }
-    
-            $("#major-dropdown").val(defaultMajor).change()
-        }   
+
+            // Populate other dropdown lists, set dropdown values, and update lists accordingly
+            $("#major-dropdown").val(firstMajor)
+            populateSecondMajorList(firstMajor)
+            populateMinorList(firstMajor)
+            $("#major2-dropdown").val(secondMajor)
+            $("#minor-dropdown").val(minor)
+            updateLists(firstMajor, secondMajor, minor)
+            saveLists()
+        }
     });
 
+    // On selecting a first major, update the dropdown lists, set the second major and minor to "-", and populate/cache the lists
     $("#major-dropdown").change(function() {
-        var chosenMajor = $("#major-dropdown option:selected").text()
-    
-        updateLists(chosenMajor)
+        let firstMajor = $("#major-dropdown option:selected").text()
+        let secondMajor = "-"
+        let minor = "-"
+        populateSecondMajorList(firstMajor)
+        populateMinorList(firstMajor)
+        $("#major2-dropdown").val(secondMajor)
+        $("minor-dropdown").val(minor)
+        updateLists(firstMajor, secondMajor, minor)
         saveLists()
-        localStorage["lastDropdown"] = chosenMajor
     });
 
+    // On selecting a second major, set the minor to "-" if it equals the second major value, and populate/cache the lists
+    $("#major2-dropdown").change(function() {
+        var firstMajor = $("#major-dropdown option:selected").text()
+        var secondMajor = $("#major2-dropdown option:selected").text()
+        var minor = $("#minor-dropdown option:selected").text()
+        if (minor === secondMajor) {
+            minor = "-"
+            $("#minor-dropdown").val(minor)
+        }
+        updateLists(firstMajor, secondMajor, minor)
+        saveLists()
+    })
+
+    // On selecting a minor, set the second major to "-" if it equals the minor value, and populate/cache the lists
+    $("#minor-dropdown").change(function() {
+        var firstMajor = $("#major-dropdown option:selected").text()
+        var secondMajor = $("#major2-dropdown option:selected").text()
+        var minor = $("#minor-dropdown option:selected").text()
+        if (secondMajor === minor) {
+            secondMajor = "-"
+            $("#major2-dropdown").val(secondMajor)
+        }
+        updateLists(firstMajor, secondMajor, minor)
+        saveLists()
+    })
+
+    // Toolbar functions
     $("#refresh").click(function() {
         refreshLists()
     });
-
     $("#export").click(function() {
         downloadJSON()
     });
-
     $("#image").click(function() {
         saveImage()
     });
-
     document.getElementById('file').addEventListener('change', readFile, false);
 
     makeListsDroppable();
 
+    // For click-drop: clicking anywhere outside of clicked item / valid list will cancel clicked action
     $(document).click(function(e) {
         if ( $(e.target).closest('.list').length === 0 ) {
-            // cancel highlighting 
             if (clickedItem != null) {
                 removeClickFromLists()
                 $(clickedItem).removeClass('clicked')
@@ -63,17 +108,50 @@ $(document).ready(function() {
         }
     });
 });
-    
+
+// Populates the second major list with majors != first major
+function populateSecondMajorList(firstMajor) {
+    var defaultSecondMajor = "-"
+    var str = "<option value='-'>-</option>"
+    for (const secondMajor in data["majors"]) {
+        if (secondMajor != firstMajor) {
+            str += "<option value='" + secondMajor + "'>" + secondMajor + "</option>"
+        }
+    }
+    $("#major2-dropdown").html(str)
+}
+
+// Populates the minor list with minors != first major
+function populateMinorList(firstMajor) {
+    var defaultMinor = "-"
+    var str = "<option value='-'>-</option>"
+    for (const minor in data["minors"]) {
+        if (minor != firstMajor) {
+            str += "<option value='" + minor + "'>" + minor + "</option>"
+        }
+    }
+    $("#minor-dropdown").html(str)
+}
+
+// Functions to get course name and type form courseId
+function getCourseName(courseId) {
+    return courseId.split("+")[0]
+}
+
+function getCourseType(courseId) {
+    return courseId.split("+")[1]
+}
+
+// Makes class and schedule lists droppable
 function makeListsDroppable() {
     var lists = $('.list');
 
     for (let j = 0; j < lists.length; j ++) {
         const list = lists[j];
-
+        // Set CSS attribute on dragover. Setting here instead of dragenter, since dragleave is triggered when dragging over list-item
         list.addEventListener('dragover', function (e) {
             e.preventDefault();
-            // this.style.backgroundColor = 'rgba(238, 238, 238, 1)';
-            var courseType = $(draggedItem).attr("id").split("+")[0]
+            var courseType = getCourseName($(draggedItem).attr("id"))
             if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
                 $(this).attr("drop-active", true)
             } else {
@@ -89,12 +167,11 @@ function makeListsDroppable() {
             $(this).removeAttr("drop-active")
         });
 
+        // TODO: insert alphabetically rather than append
         list.addEventListener('drop', function (e) {
-            // console.log("drop")
-            var courseType = $(draggedItem).attr("id").split("+")[0]
+            var courseType = getCourseName($(draggedItem).attr("id"))
             if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType && 
                 $(draggedItem).parent().attr('id') != $(this).attr('id')) {
-                // console.log("appended item to lower div")
                 this.append(draggedItem);
                 saveLists()
             }
@@ -116,17 +193,12 @@ function makeListsDroppable() {
     }
 }
 
+// Removes the click-active attribute from lists
 function removeClickFromLists() {
-    var lists = $('.list');
-    for (let j = 0; j < lists.length; j ++) {
-        let list = lists[j]
-        $(list).removeAttr("click-active")
-    }
+    $('.list').removeAttr("click-active")
 }
 
-//Code snippet that allows the list items to be dragged into different boxes. 
-//I pulled it from this Youtube video: https://www.youtube.com/watch?v=tZ45HZAkbLc
-
+// Allows list-items to be draggable
 function makeItemsDraggable() {
     var list_items = $('.list-item');
     
@@ -154,6 +226,7 @@ function makeItemsDraggable() {
     }
 }
 
+// Allows list-items to be clickable, for click and drop
 function makeItemsClickable() {
     var list_items = $('.list-item');
     
@@ -164,7 +237,6 @@ function makeItemsClickable() {
             if (clickedItem != null) {
                 $(clickedItem).removeClass('clicked')
                 if (clickedItem == item || $(item).parent().attr("click-active") == "false") {
-                    console.log("here")
                     clickedItem = null
                     removeClickFromLists()
                     return
@@ -182,7 +254,7 @@ function makeItemsClickable() {
             var lists = $('.list');
             for (let j = 0; j < lists.length; j ++) {
                 const list = lists[j]
-                var courseType = $(clickedItem).attr("id").split("+")[0]
+                var courseType = getCourseName($(clickedItem).attr("id"))
                 if ($(list).attr('id') != parentList.attr('id')) {
                     if ($(list).parent().hasClass("schedule-lists") || $(list).attr("id") == courseType) {
                         $(list).attr('click-active', true)
@@ -195,12 +267,31 @@ function makeItemsClickable() {
     }
 }
 
+// Returns cache key, a combination of all the dropdown values
+function getCacheKey() {
+    var firstMajor = $("#major-dropdown option:selected").text()
+    var secondMajor = $("#major2-dropdown option:selected").text()
+    var minor = $("#minor-dropdown option:selected").text()
+    return firstMajor + ";" + secondMajor + ";" + minor
+}
+
+// Boolean functions to return whether a second major or minor exists
+function isSecondMajor() {
+    return $("#major2-dropdown option:selected").text() != "-"
+}
+
+function isMinor() {
+    return $("#minor-dropdown option:selected").text() != "-"
+}
+
+// Clears and reformats lists
 function clearLists() {
     $(".list").empty()
-    $(".list").removeAttr("click-active")
+    removeClickFromLists()
     $(".list-item").remove()
 }
 
+// Caches the lists and the selected dropdown values
 function saveLists() {
     var listObj = {}
     listObj["lists"] = {}
@@ -212,61 +303,106 @@ function saveLists() {
         });
         listObj["lists"][key] = courses
     });
-    var dropdownValue = $("#major-dropdown option:selected").text()
-    listObj["major"] = dropdownValue
-    // console.log(listObj)
-    localStorage[dropdownValue] = JSON.stringify(listObj)
+    let inputs = getCacheKey()
+    listObj["inputs"] = inputs
+    localStorage[inputs] = JSON.stringify(listObj)
+    localStorage["previousInputs"] = inputs
 }
-    
-function loadLists(dropdownValue) {
-    if (localStorage[dropdownValue]) {
-        var listJSON = localStorage[dropdownValue]
+
+// Loads the lists given dropdown values
+function loadLists(inputs) {
+    if (localStorage[inputs]) {
+        var listJSON = localStorage[inputs]
         loadListsFromJSON(listJSON)
+        let inputsArray = inputs.split(";")
+        let minor = inputsArray[2]
+        if (minor == "-") {
+            $("#minorCourses").hide()
+            $("#minorCoursesTitle").hide()
+        } else {
+            $("#minorCourses").show()
+            $("#minorCoursesTitle").show()
+        }
     }
 }
 
+// Loads the lists given the JSON string
 function loadListsFromJSON(jsonString) {
     var listObj = JSON.parse(jsonString)
-    // console.log(listObj)
     for (const listID in listObj["lists"]) {
         var div = $("#" + listID)
         var courses = listObj["lists"][listID]
         var str = ""
         courses.forEach( function(item, index) {
-            var courseName = item.split("+")[1]
-            str += '<div class="list-item" draggable="true" id="'+item+'">'+courseName+'</div>'
+            var courseType = getCourseName(item)
+            var courseName = getCourseType(item)
+            str += '<div class="list-item '+courseType+'" draggable="true" id="'+item+'">'+courseName+'</div>'
         })
         div.html(str)
     }
     makeItemsDraggable()
     makeItemsClickable()
 }
-    
-function updateLists(major) {
-    // Clear and reformat every list
+
+// Populates the lists, given the majors from the dropdown values
+function updateLists(firstMajor, secondMajor, minor) {
     clearLists()
 
     // Check for cached lists
-    if (localStorage[major]) {
-        loadLists(major)
+    inputs = getCacheKey()
+    if (localStorage[inputs]) {
+        loadLists(inputs)
         return
     }
 
-    // Basically when chosenMajor == None 
-    if (!(major in data["majors"])) {
-        return
+    // Populate the lists using the data Object created from the json file
+    // Each currDiv corresponds to a list_id (#lowerDivs, #upperDivs, etc)
+    var majorObj = data["majors"][firstMajor]
+    if (secondMajor != "-") {
+        var majorObj2 = data["majors"][secondMajor]
     }
-
-    var majorObj = data["majors"][major]
     for (const courseType in majorObj) {
         var currDiv = $("#" + courseType)
         if (currDiv.length == 0) {
-            // console.log("error: courseType '" + courseType + "' is an invalid div")
-            continue
+            continue // currDiv is not a valid list ID
         }
-        var str = ""
+        let courses = []
         majorObj[courseType].forEach( function(item, index) {
-            str += '<div class="list-item" draggable="true" id="'+courseType+'+'+item+'">'+item+'</div>'
+            courses.push(item)
+        });
+        if (secondMajor != "-") {
+            majorObj2[courseType].forEach( function(item, index) {
+                courses.push(item)
+            });
+        }
+        // Put list in alphabetical order
+        courses = [...new Set(courses)]
+        courses.sort()
+        listData[courseType] = courses
+    }
+
+    if (minor != "-") {
+        var minorObj = data["minors"][minor]
+        var currDiv = $("#minorCourses")
+        let courses = []
+        minorObj["minorCourses"].forEach( function(item, index) {
+            courses.push(item)
+        });
+        courses = [...new Set(courses)]
+        courses.sort()
+        listData["minorCourses"] = courses
+        $("#minorCourses").show()
+        $("#minorCoursesTitle").show()
+    } else {
+        $("#minorCourses").hide()
+        $("#minorCoursesTitle").hide()
+    }
+
+    for (const courseType in listData) {
+        var currDiv = $("#" + courseType)
+        var str = ""
+        listData[courseType].forEach( function(item, index) {
+            str += '<div class="list-item '+courseType+'" draggable="true" id="'+courseType+'+'+item+'">'+item+'</div>'
         });
         currDiv.html(str)
     }
@@ -274,20 +410,23 @@ function updateLists(major) {
     makeItemsDraggable();
     makeItemsClickable();
 }
-    
-function refreshLists() {
-    var chosenMajor = $("#major-dropdown option:selected").text()
 
+// Clears the cache, updates the list with the selected majors
+function refreshLists() {
+    let firstMajor = $("#major-dropdown option:selected").text()
+    let secondMajor = $("#major2-dropdown option:selected").text()
+    let minor = $("#minor-dropdown option:selected").text()
     localStorage.clear()
-    updateLists(chosenMajor)
+    updateLists(firstMajor, secondMajor, minor)
+    saveLists()
 }
 
+// Downloads a JSON file with the current list state, for export functionality
 function downloadJSON() {
-    var dropdownValue = $("#major-dropdown option:selected").text()
-    if (localStorage[dropdownValue]) {
-        jsonData = localStorage[dropdownValue]
+    var inputs = getCacheKey()
+    if (localStorage[inputs]) {
+        jsonData = localStorage[inputs]
         var data = "text/json;charset=utf-8," + encodeURIComponent(jsonData);
-        // console.log(data)
         var a = document.createElement('a')
         a.href = "data:" + data;
         a.download = "schedule.sch"
@@ -298,21 +437,31 @@ function downloadJSON() {
     }
 }
 
+// Reads file on import and selects appropriate dropdown values, populates the list accordingly
 function readFile (evt) {
     var files = evt.target.files;
     var file = files[0];           
     var reader = new FileReader();
     reader.onload = function(event) {
-      // console.log(event.target.result);
-      clearLists()
-      var listObj = JSON.parse(event.target.result)
-      var major = listObj["major"]
-      localStorage[major] = event.target.result
-      $("#major-dropdown").val(major).change()
+        clearLists()
+        var listObj = JSON.parse(event.target.result)
+        var inputs = listObj["inputs"]
+        localStorage[inputs] = event.target.result
+        let inputsArray = inputs.split(";")
+        firstMajor = inputsArray[0]
+        secondMajor = inputsArray[1]
+        minor = inputsArray[2]
+        $("#major-dropdown").val(firstMajor)
+        populateSecondMajorList(firstMajor)
+        populateMinorList(firstMajor)
+        $("#major2-dropdown").val(secondMajor)
+        $("#minor-dropdown").val(minor)
+        loadLists(inputs)
     }
     reader.readAsText(file)
  }
 
+ // Saves the schedule as an image
  function saveImage() {
     var container = $("#schedule-container")
     html2canvas(container, {
@@ -324,13 +473,10 @@ function readFile (evt) {
             var height = container.height()
             tempcanvas.width = width + 16
             tempcanvas.height = height + 12
-            console.log(tempcanvas.width)
-            console.log(tempcanvas.height)
             context.drawImage(canvas,0,0);
             var link=document.createElement("a");
             link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
             link.download = 'screenshot.jpg';
-            // console.log(link.href)
             link.click();
         }
     });
