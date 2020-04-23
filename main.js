@@ -135,11 +135,13 @@ function populateMinorList(firstMajor) {
 
 // Functions to get course name and type form courseId
 function getCourseName(courseId) {
-    return courseId.split("+")[0]
+    let name = courseId.split("_")[1]
+    name = name.replace(/\++/g, ' ');
+    return name
 }
 
 function getCourseType(courseId) {
-    return courseId.split("+")[1]
+    return courseId.split("_")[0]
 }
 
 // Makes class and schedule lists droppable
@@ -151,8 +153,8 @@ function makeListsDroppable() {
         // Set CSS attribute on dragover. Setting here instead of dragenter, since dragleave is triggered when dragging over list-item
         list.addEventListener('dragover', function (e) {
             e.preventDefault();
-            var courseType = getCourseName($(draggedItem).attr("id"))
-            if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType) {
+            var courseType = getCourseType($(draggedItem).attr("id"))
+            if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType) {
                 $(this).attr("drop-active", true)
             } else {
                 $(this).attr("drop-active", false)
@@ -169,8 +171,8 @@ function makeListsDroppable() {
 
         // TODO: insert alphabetically rather than append
         list.addEventListener('drop', function (e) {
-            var courseType = getCourseName($(draggedItem).attr("id"))
-            if ($(this).parent().hasClass("schedule-lists") || $(this).attr("id") == courseType && 
+            var courseType = getCourseType($(draggedItem).attr("id"))
+            if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType && 
                 $(draggedItem).parent().attr('id') != $(this).attr('id')) {
                 this.append(draggedItem);
                 saveLists()
@@ -254,9 +256,9 @@ function makeItemsClickable() {
             var lists = $('.list');
             for (let j = 0; j < lists.length; j ++) {
                 const list = lists[j]
-                var courseType = getCourseName($(clickedItem).attr("id"))
+                var courseType = getCourseType($(clickedItem).attr("id"))
                 if ($(list).attr('id') != parentList.attr('id')) {
-                    if ($(list).parent().hasClass("schedule-lists") || $(list).attr("id") == courseType) {
+                    if ($(list).hasClass("schedule-list") || $(list).attr("id") == courseType) {
                         $(list).attr('click-active', true)
                     } else {
                         $(list).attr('click-active', false)
@@ -289,6 +291,8 @@ function clearLists() {
     $(".list").empty()
     removeClickFromLists()
     $(".list-item").remove()
+    $(".list-searchbar").val("")
+    listData = {}
 }
 
 // Caches the lists and the selected dropdown values
@@ -317,10 +321,10 @@ function loadLists(inputs) {
         let inputsArray = inputs.split(";")
         let minor = inputsArray[2]
         if (minor == "-") {
-            $("#minorCourses").hide()
+            $("#minorCourses-container").hide()
             $("#minorCoursesTitle").hide()
         } else {
-            $("#minorCourses").show()
+            $("#minorCourses-container").show()
             $("#minorCoursesTitle").show()
         }
     }
@@ -332,14 +336,26 @@ function loadListsFromJSON(jsonString) {
     for (const listID in listObj["lists"]) {
         var div = $("#" + listID)
         var courses = listObj["lists"][listID]
+        listData[listID] = courses
         var str = ""
         courses.forEach( function(item, index) {
-            var courseType = getCourseName(item)
-            var courseName = getCourseType(item)
+            var courseName = getCourseName(item)
+            var courseType = getCourseType(item)
             str += '<div class="list-item '+courseType+'" draggable="true" id="'+item+'">'+courseName+'</div>'
         })
         div.html(str)
     }
+    $(".list-searchbar").each( function() { 
+        let courseType = $(this).next().attr('id')
+        let prevInput = ""
+        $(this).bind("keyup input change", function(e) {
+            let inputText = $("#"+courseType+"Search").val()
+            if (inputText != prevInput) {
+                prevInput = inputText
+                filterLists(courseType) 
+            }
+        }) 
+    })
     makeItemsDraggable()
     makeItemsClickable()
 }
@@ -358,7 +374,7 @@ function updateLists(firstMajor, secondMajor, minor) {
     // Populate the lists using the data Object created from the json file
     // Each currDiv corresponds to a list_id (#lowerDivs, #upperDivs, etc)
     var majorObj = data["majors"][firstMajor]
-    if (secondMajor != "-") {
+    if (isSecondMajor()) {
         var majorObj2 = data["majors"][secondMajor]
     }
     for (const courseType in majorObj) {
@@ -381,7 +397,7 @@ function updateLists(firstMajor, secondMajor, minor) {
         listData[courseType] = courses
     }
 
-    if (minor != "-") {
+    if (isMinor()) {
         var minorObj = data["minors"][minor]
         var currDiv = $("#minorCourses")
         let courses = []
@@ -391,21 +407,32 @@ function updateLists(firstMajor, secondMajor, minor) {
         courses = [...new Set(courses)]
         courses.sort()
         listData["minorCourses"] = courses
-        $("#minorCourses").show()
+        $("#minorCourses-container").show()
         $("#minorCoursesTitle").show()
     } else {
-        $("#minorCourses").hide()
+        $("#minorCourses-container").hide()
         $("#minorCoursesTitle").hide()
     }
 
     for (const courseType in listData) {
         var currDiv = $("#" + courseType)
         var str = ""
+        var newCourses = []
         listData[courseType].forEach( function(item, index) {
-            str += '<div class="list-item '+courseType+'" draggable="true" id="'+courseType+'+'+item+'">'+item+'</div>'
+            let item_id = courseType+"_"+item.replace(/\s+/g, '+');
+            newCourses.push(item_id)
+            str += '<div class="list-item '+courseType+'" draggable="true" id="'+item_id+'">'+item+'</div>'
         });
+        listData[courseType] = newCourses
         currDiv.html(str)
     }
+
+    $(".list-searchbar").each( function() { 
+        let courseType = $(this).parent().attr('id')
+        addEventListener("keyup", function(e) { 
+            filterLists(courseType) 
+        }) 
+    })
 
     makeItemsDraggable();
     makeItemsClickable();
@@ -478,6 +505,21 @@ function readFile (evt) {
             link.href=tempcanvas.toDataURL('image/jpg');   //function blocks CORS
             link.download = 'screenshot.jpg';
             link.click();
+        }
+    });
+}
+
+function filterLists(courseType) {
+    s = $("#"+courseType+"Search").val().toUpperCase()
+    
+    listData[courseType].forEach( function(courseID, index) {
+        let courseName = getCourseName(courseID)
+        let courseDiv = $("#" + $.escapeSelector(courseID))
+        courseName = courseName.toUpperCase()
+        if (!(courseName.includes(s)) && courseDiv.parent().hasClass("class-list")) {
+            courseDiv.hide()
+        } else {
+            courseDiv.show()
         }
     });
 }

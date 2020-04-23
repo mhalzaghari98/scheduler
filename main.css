@@ -4,8 +4,17 @@
 	box-sizing: border-box;
 }
 
+textarea:focus, input:focus{
+	outline: none;
+	border: 1px solid #BBBBBB;
+}
+
+input {
+	border: 1px solid #DDDDDD;
+}
+
 body {
-	background-color:  #EEEEEE;
+	background-color:  #FFFFFF;
 	font-family: 'Sen', sans-serif;
 	overflow-x: hidden;
 }
@@ -179,20 +188,48 @@ select:focus {
 	padding-bottom: 10px;
 }
 
+.list-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 34%;
+	height: inherit;
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin: 0 16px;
+	padding: 2px 0px;
+	border-radius: 8px;
+	background-color: rgba(249, 249, 249, 100);
+}
+
+.list-searchbar {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 6px;
+	font-family: 'Roboto', FontAwesome, sans-serif;
+	font-size: 14px;
+	border-radius: 10px;
+	padding: 4px 6px;
+	margin: 4px 10px 4px 10px;
+	width: 94%;
+	z-index: 2;
+}
+
 .list {
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
-	align-content: center;
+	align-items: center;
 	overflow-x: hidden;
 	overflow-y: auto;
-	width: 34%;
+	width: 100%;
 	height: inherit;
-	border: 5px solid rgba(253, 253, 253, 100);
+	border: 2px solid rgba(249, 249, 249, 100);
 	border-radius: 10px;
-	background-color: rgba(253, 253, 253, 100);
-	margin: 0 16px;
+	background-color: rgba(249, 249, 249, 100);
 	padding: 0px 4px;
+	margin: 4px 2px;
 	transition: background-color 0.2s linear;
 	z-index: 1;
 }
@@ -232,18 +269,19 @@ select:focus {
 
 .list[click-active=true] {
 	border: 2px dashed rgba(0, 0, 0, 0.4);
-	padding: 3px 7px;
 }
 
 .list .list-item {
 	font-family: 'Roboto', sans-serif;
+	width: 100%;
 	background-color: rgba(0, 0, 0, 0.06);
 	border-radius: 10px;
+	border: 1px solid white;
 	padding: 4px 4px;
 	text-align: center;
 	margin: 1px 0px;
 	transition: 0.1s ease;
-	z-index: 2;
+	z-index: 1;
 	transition: background-color 0.2s ease;
 }
 
@@ -262,15 +300,15 @@ select:focus {
 }
 
 .list-item.lowerDivs {
-	background-color: rgba(159, 255, 164, 0.5);
+	background-color: rgba(206, 254, 208, 1);
 }
 
 .list-item.upperDivs {
-	background-color: rgba(159, 225, 255, 0.5);
+	background-color: rgba(206, 239, 254, 1);
 }
 
 .list-item.breadths {
-	background-color: rgba(255, 245, 112, 0.6);
+	background-color: rgb(254, 248, 168);
 }
 
 .list-item.minorCourses {
@@ -310,15 +348,15 @@ select:focus {
 }
 
 .list[click-active=true] .list-item.lowerDivs:hover {
-	background-color: rgba(159, 255, 164, 0.5);
+	background-color: rgba(206, 254, 208, 1);
 }
 
 .list[click-active=true] .list-item.upperDivs:hover {
-	background-color: rgba(159, 225, 255, 0.5);
+	background-color: rgba(206, 239, 254, 1);
 }
 
 .list[click-active=true] .list-item.breadths:hover {
-	background-color: rgba(255, 245, 112, 0.6);
+	background-color: rgb(254, 248, 168);
 }
 
 .list[click-active=true] .list-item.minorCourses:hover {
@@ -326,15 +364,15 @@ select:focus {
 }
 
 .list[click-active=false] .list-item.lowerDivs:hover {
-	background-color: rgba(159, 255, 164, 0.5);
+	background-color: rgba(206, 254, 208, 1);
 }
 
 .list[click-active=false] .list-item.upperDivs:hover {
-	background-color: rgba(159, 225, 255, 0.5);
+	background-color: rgba(206, 239, 254, 1);
 }
 
 .list[click-active=false] .list-item.breadths:hover {
-	background-color: rgba(255, 245, 112, 0.6);
+	background-color: rgb(254, 248, 168);
 }
 
 .list[click-active=false] .list-item.minorCourses:hover {
@@ -343,7 +381,7 @@ select:focus {
 
 #schedule-container {
 	width: 66vw;
-	background-color: #EEEEEE;
+	background-color: inherit;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
