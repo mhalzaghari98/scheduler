@@ -5,7 +5,7 @@
 }
 
 body {
-	background-color:  #EEEEEE;
+	background-color:  rgb(255, 255, 255);
 	font-family: 'Sen', sans-serif;
 	overflow-x: hidden;
 }
@@ -188,9 +188,9 @@ select:focus {
 	overflow-y: auto;
 	width: 34%;
 	height: inherit;
-	border: 5px solid rgba(253, 253, 253, 100);
+	border: 5px solid rgba(247, 247, 247, 100);
 	border-radius: 10px;
-	background-color: rgba(253, 253, 253, 100);
+	background-color: rgba(247, 247, 247, 100);
 	margin: 0 16px;
 	padding: 0px 4px;
 	transition: background-color 0.2s linear;
@@ -343,7 +343,7 @@ select:focus {
 
 #schedule-container {
 	width: 66vw;
-	background-color: #EEEEEE;
+	background-color: #FFFFFF;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
