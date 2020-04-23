@@ -378,7 +378,7 @@ function updateLists(firstMajor, secondMajor, minor) {
         var majorObj2 = data["majors"][secondMajor]
     }
     for (const courseType in majorObj) {
-        var currDiv = $("#" + courseType)
+        let currDiv = $("#" + courseType)
         if (currDiv.length == 0) {
             continue // currDiv is not a valid list ID
         }
@@ -397,9 +397,21 @@ function updateLists(firstMajor, secondMajor, minor) {
         listData[courseType] = courses
     }
 
+    //breadth list population
+    var breadths = data["breadths"]["breadthCourses"]
+    let currDiv = $("#breadths")
+    let courses = []
+    breadths.forEach( function(item, index) {
+        courses.push(item)
+    });
+    courses = [...new Set(courses)]
+    courses.sort()
+    listData["breadths"] = courses
+
+    // minor list population
     if (isMinor()) {
         var minorObj = data["minors"][minor]
-        var currDiv = $("#minorCourses")
+        let currDiv = $("#minorCourses")
         let courses = []
         minorObj["minorCourses"].forEach( function(item, index) {
             courses.push(item)
@@ -415,7 +427,7 @@ function updateLists(firstMajor, secondMajor, minor) {
     }
 
     for (const courseType in listData) {
-        var currDiv = $("#" + courseType)
+        let currDiv = $("#" + courseType)
         var str = ""
         var newCourses = []
         listData[courseType].forEach( function(item, index) {

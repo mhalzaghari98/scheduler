@@ -14,7 +14,7 @@ input {
 }
 
 body {
-	background-color:  #FFFFFF;
+	background-color:  rgb(255, 255, 255);
 	font-family: 'Sen', sans-serif;
 	overflow-x: hidden;
 }
@@ -225,9 +225,9 @@ select:focus {
 	overflow-y: auto;
 	width: 100%;
 	height: inherit;
-	border: 2px solid rgba(249, 249, 249, 100);
+	border: 2px solid rgba(247, 247, 247, 100);
 	border-radius: 10px;
-	background-color: rgba(249, 249, 249, 100);
+	background-color: rgba(247, 247, 247, 100);
 	padding: 0px 4px;
 	margin: 4px 2px;
 	transition: background-color 0.2s linear;
