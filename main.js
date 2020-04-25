@@ -1,5 +1,6 @@
 var data = {}
 var listData = {}
+var classData = {}
 var draggedItem = null
 var clickedItem = null
 
@@ -293,6 +294,7 @@ function clearLists() {
     $(".list-item").remove()
     $(".list-searchbar").val("")
     listData = {}
+    classData = {}
 }
 
 // Caches the lists and the selected dropdown values
@@ -333,6 +335,8 @@ function loadLists(inputs) {
 // Loads the lists given the JSON string
 function loadListsFromJSON(jsonString) {
     var listObj = JSON.parse(jsonString)
+    listData = {}
+    courseData = {}
     for (const listID in listObj["lists"]) {
         var div = $("#" + listID)
         var courses = listObj["lists"][listID]
@@ -341,6 +345,7 @@ function loadListsFromJSON(jsonString) {
         courses.forEach( function(item, index) {
             var courseName = getCourseName(item)
             var courseType = getCourseType(item)
+            classData[courseName] = courseType
             str += '<div class="list-item '+courseType+'" draggable="true" id="'+item+'">'+courseName+'</div>'
         })
         div.html(str)
@@ -348,7 +353,7 @@ function loadListsFromJSON(jsonString) {
     $(".list-searchbar").each( function() { 
         let courseType = $(this).next().attr('id')
         let prevInput = ""
-        $(this).bind("keyup input change", function(e) {
+        $(this).bind("input", function(e) {
             let inputText = $("#"+courseType+"Search").val()
             if (inputText != prevInput) {
                 prevInput = inputText
@@ -385,38 +390,43 @@ function updateLists(firstMajor, secondMajor, minor) {
         let courses = []
         majorObj[courseType].forEach( function(item, index) {
             courses.push(item)
+            classData[item] = courseType
         });
         if (secondMajor != "-") {
             majorObj2[courseType].forEach( function(item, index) {
-                courses.push(item)
+                if (!(item in classData)) {
+                    courses.push(item)
+                    classData[item] = courseType
+                }
             });
         }
         // Put list in alphabetical order
-        courses = [...new Set(courses)]
         courses.sort()
         listData[courseType] = courses
     }
 
     //breadth list population
-    var breadths = data["breadths"]["breadthCourses"]
-    let currDiv = $("#breadths")
+    let breadths = data["breadths"]["breadthCourses"]
     let courses = []
     breadths.forEach( function(item, index) {
-        courses.push(item)
+        if (!(item in classData)) {
+            courses.push(item)
+            classData[item] = "breadths"
+        }
     });
-    courses = [...new Set(courses)]
     courses.sort()
     listData["breadths"] = courses
 
     // minor list population
     if (isMinor()) {
         var minorObj = data["minors"][minor]
-        let currDiv = $("#minorCourses")
         let courses = []
         minorObj["minorCourses"].forEach( function(item, index) {
-            courses.push(item)
+            if (!(item in classData)) {
+                courses.push(item)
+                classData[item] = "minorCourses"
+            }
         });
-        courses = [...new Set(courses)]
         courses.sort()
         listData["minorCourses"] = courses
         $("#minorCourses-container").show()

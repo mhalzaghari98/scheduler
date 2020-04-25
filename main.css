@@ -21,13 +21,30 @@ body {
 
 .app {
 	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: flex-start;
 	width: auto;
 	height: auto;
-	margin-top: 20px;
-	margin-bottom: 20px;
+}
+
+#left-pane {
+	width: 30%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+	height: 100vh;
+	background-color: white;
+}
+
+#right-pane {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	width: 70%;
+	height: 100vh;
 }
 
 header {
@@ -44,7 +61,7 @@ header h1 {
 }
 
 header h2 {
-	font-size: 32px;
+	font-size: 28px;
 }
 
 header h3 {
@@ -62,7 +79,7 @@ header h3 {
 
 .all-filters {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 }
@@ -146,11 +163,28 @@ select:focus {
 }
 
 .main-container {
-	margin: 6px;
+	margin: 16px 0;
+	background-color: #eeeeee;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding-bottom: 16px;
+	box-shadow: 0px 2px 8px 2px #ccc;
 }
 
 .main-title {
-	margin: 4px;
+	display: flex;
+    flex-direction: column;
+    justify-content: center;
+	align-items: flex-start;
+	margin: 0px;
+	width: 100%;
+    background-color: rgba(0, 126, 255, 0.88);
+    color: white;
+    padding: 6px 12px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 
 #classes-container {
@@ -164,14 +198,14 @@ select:focus {
 	align-items: center;
 	width: 100%;
 	height: auto;
+	padding: 6px 0px;
 }
 
 .smallTitle {
 	text-align: center;
 	width: 100%;
 	height: auto;
-	padding: 10px;
-	padding-top: 4px;
+	padding: 4px;
 	transition: all 0.2s linear;
 	align-items: center;
 }
@@ -185,7 +219,6 @@ select:focus {
 	min-height: 120px;
 	align-items: center;
 	justify-content: center;
-	padding-bottom: 10px;
 }
 
 .list-container {
@@ -200,7 +233,7 @@ select:focus {
 	margin: 0 16px;
 	padding: 2px 0px;
 	border-radius: 8px;
-	background-color: rgba(249, 249, 249, 100);
+	background-color: rgba(222, 222, 222, 100);
 }
 
 .list-searchbar {
@@ -225,9 +258,9 @@ select:focus {
 	overflow-y: auto;
 	width: 100%;
 	height: inherit;
-	border: 2px solid rgba(247, 247, 247, 100);
+	border: 2px solid rgba(222, 222, 222, 100);
 	border-radius: 10px;
-	background-color: rgba(247, 247, 247, 100);
+	background-color: rgba(222, 222, 222, 100);
 	padding: 0px 4px;
 	margin: 4px 2px;
 	transition: background-color 0.2s linear;
@@ -276,7 +309,7 @@ select:focus {
 	width: 100%;
 	background-color: rgba(0, 0, 0, 0.06);
 	border-radius: 10px;
-	border: 1px solid white;
+	border: 1px solid rgb(190, 190, 190);
 	padding: 4px 4px;
 	text-align: center;
 	margin: 1px 0px;
@@ -381,7 +414,6 @@ select:focus {
 
 #schedule-container {
 	width: 66vw;
-	background-color: inherit;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
