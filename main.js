@@ -3,6 +3,13 @@ var listData = {}
 var classData = {}
 var draggedItem = null
 var clickedItem = null
+var LIST_ID_TO_NAME = {
+    "lowerDivs": "Lower Division",
+    "upperDivs": "Upper Division",
+    "breadths": "Breadths",
+    "minorCourses": "Minor Courses",
+    "addedClass": "Schedule"
+}
 const MAX_CLASS_LENGTH = 20
 
 $(document).ready(function() {
@@ -95,6 +102,9 @@ $(document).ready(function() {
     $("#image").click(function() {
         saveImage()
     });
+    $("#error-exit").bind("click", function(e) {
+        $(this).parent().hide()
+    })
     $(".list-searchbar").bind("input", function(e) {
         let courseType = $(this).next().attr('id')
         let inputText = $("#"+courseType+"Search").val()
@@ -108,6 +118,14 @@ $(document).ready(function() {
             input_box.focus()
         } else {
             addClass(input, list_id)
+            input_box.val("")
+        }
+    })
+    $(".input-addclass").bind("keydown", function(e) {
+        if (e.key === "Enter") {
+            let list_id = $(this).parent().next().attr('id')
+            addClass($(this).val(), list_id)
+            $(this).val("")
         }
     })
     $(".removeclass").click( function() {
@@ -564,16 +582,17 @@ function filterLists(courseType) {
 // Add a class if it does not already exist in the schedule
 function addClass(input, list_id) {
     if (!(input)) {
-        console.log("input cannot be empty")
+        displayError("Class cannot be empty")
         return
     }
     input = input.toUpperCase()
     if (!(isValidInput(input))) {
-        console.log("input contains invalid characters or is too long")
+        displayError("Class contains invalid characters, or exceeds limit: '" + input.substring(0, 
+            Math.min(input.length, MAX_CLASS_LENGTH)) + "'")
         return
     }
     if (input in classData) {
-        console.log("class already exists in current schedule")
+        displayError(input + " already exists in " + LIST_ID_TO_NAME[classData[input]])
         return
     }
     let courses = []
@@ -596,7 +615,7 @@ function addClass(input, list_id) {
 
 function removeCourse() {
     let courseId = $(clickedItem).attr('id')
-    let courseName = getCourseType(courseId)
+    let courseName = getCourseName(courseId)
     let courseType = getCourseType(courseId)
     if (courseType in listData) {
         let index = listData[courseType].indexOf(courseId)
@@ -605,7 +624,9 @@ function removeCourse() {
         }
     }
     if (courseType === "addedClass") {
+        console.log(courseName)
         if (courseName in classData) {
+            console.log(courseName)
             delete classData[courseName]
         }
         $("#"+$.escapeSelector(courseId)).remove()
@@ -613,6 +634,7 @@ function removeCourse() {
         listData[courseType].push(courseId)
         let div = $("#"+courseType)
         div.append(clickedItem)
+        $(clickedItem).removeClass('clicked')
     }
     clickedItem = null
     saveLists()
@@ -624,4 +646,15 @@ function isValidInput(input) {
         return true;
     }
     return false
+}
+
+function displayError(msg) {
+    const errDiv = $("#error-container")
+    const errMsgDiv = $("#error-msg")
+    s = "Error: " + msg
+    errMsgDiv.html(s)
+    errDiv.css("display", "flex")
+    $([document.documentElement, document.body]).animate({
+        scrollTop: 0
+    }, 500);
 }
