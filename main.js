@@ -21,6 +21,20 @@ $(document).ready(function() {
         success: function(response)  {
             data = response
 
+            // Sort the majors
+            let sortedMajors = {}
+            Object.keys(data["majors"]).sort().forEach(function(key) {
+                sortedMajors[key] = data["majors"][key];
+            });
+            data["majors"] = sortedMajors
+
+            // Sort the minors
+            let sortedMinors = {}
+            Object.keys(data["minors"]).sort().forEach(function(key) {
+                sortedMinors[key] = data["minors"][key];
+            });
+            data["minors"] = sortedMinors
+
             // Populate the first major list dropdown
             var defaultMajor = ""
             for (const major in data["majors"]) {
