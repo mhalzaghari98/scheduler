@@ -285,6 +285,35 @@ select:focus {
 	border: none;
 }
 
+.removeclass {
+	display: none;
+	position: -webkit-sticky;
+	position: sticky;
+	top: 6px;
+	text-align: center;
+	font-family: 'Roboto', sans-serif;
+	font-size: 14px;
+	font-weight: 1000;
+	letter-spacing: 0.1em;
+	color: white;
+	border-radius: 10px;
+	padding: 4px 6px;
+	margin: 4px 10px 4px 10px;
+	width: 94%;
+	background-color: #ff6e6e;
+	z-index: 2;
+	transition: background-color 0.2s ease;
+}
+
+.removeclass:hover {
+	background-color: #f74c4c;
+	cursor: pointer;
+}
+
+.removeclass:active {
+	transform: scale(0.98);
+}
+
 .list {
 	display: flex;
 	flex-direction: column;

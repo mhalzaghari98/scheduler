@@ -103,7 +103,18 @@ $(document).ready(function() {
     $(".plus-icon").click( function() {
         let list_id = $(this).parent().next().attr('id')
         let input_box = $(this).prev()
-        addClass(input_box.val(), list_id)
+        let input = input_box.val()
+        if (!input) {
+            input_box.focus()
+        } else {
+            addClass(input, list_id)
+        }
+    })
+    $(".removeclass").click( function() {
+        if (clickedItem != null) {
+            removeCourse(clickedItem)
+            removeClickFromLists()
+        }
     })
     document.getElementById('file').addEventListener('change', readFile, false);
 
@@ -214,6 +225,8 @@ function makeListsDroppable() {
 // Removes the click-active attribute from lists
 function removeClickFromLists() {
     $('.list').removeAttr("click-active")
+    $(".addclass-container").show()
+    $(".removeclass").hide()
 }
 
 // Allows list-items to be draggable
@@ -267,8 +280,12 @@ function makeItemsClickable() {
             clickedItem = item;
             $(clickedItem).addClass('list-item clicked')
             var parentList = $(clickedItem).parent()
-
             removeClickFromLists()
+
+            // Hide add class button from current list, and show remove class button
+            parentList.siblings(".addclass-container").hide()
+            parentList.siblings(".removeclass").show()
+
             var lists = $('.list');
             for (let j = 0; j < lists.length; j ++) {
                 const list = lists[j]
@@ -546,7 +563,6 @@ function filterLists(courseType) {
 
 // Add a class if it does not already exist in the schedule
 function addClass(input, list_id) {
-    console.log(list_id)
     if (!(input)) {
         console.log("input cannot be empty")
         return
@@ -576,6 +592,30 @@ function addClass(input, list_id) {
     saveLists()
     makeItemsClickable()
     makeItemsDraggable()
+}
+
+function removeCourse() {
+    let courseId = $(clickedItem).attr('id')
+    let courseName = getCourseType(courseId)
+    let courseType = getCourseType(courseId)
+    if (courseType in listData) {
+        let index = listData[courseType].indexOf(courseId)
+        if (index > -1) {
+            listData[courseType].splice(index, 1)
+        }
+    }
+    if (courseType === "addedClass") {
+        if (courseName in classData) {
+            delete classData[courseName]
+        }
+        $("#"+$.escapeSelector(courseId)).remove()
+    } else {
+        listData[courseType].push(courseId)
+        let div = $("#"+courseType)
+        div.append(clickedItem)
+    }
+    clickedItem = null
+    saveLists()
 }
 
 function isValidInput(input) {
