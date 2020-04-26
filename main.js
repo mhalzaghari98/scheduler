@@ -3,6 +3,7 @@ var listData = {}
 var classData = {}
 var draggedItem = null
 var clickedItem = null
+const MAX_CLASS_LENGTH = 20
 
 $(document).ready(function() {
     // Read the degrees.json file and store the object in data
@@ -94,6 +95,16 @@ $(document).ready(function() {
     $("#image").click(function() {
         saveImage()
     });
+    $(".list-searchbar").bind("input", function(e) {
+        let courseType = $(this).next().attr('id')
+        let inputText = $("#"+courseType+"Search").val()
+        filterLists(courseType) 
+    }) 
+    $(".plus-icon").click( function() {
+        let list_id = $(this).parent().next().attr('id')
+        let input_box = $(this).prev()
+        addClass(input_box.val(), list_id)
+    })
     document.getElementById('file').addEventListener('change', readFile, false);
 
     makeListsDroppable();
@@ -154,11 +165,13 @@ function makeListsDroppable() {
         // Set CSS attribute on dragover. Setting here instead of dragenter, since dragleave is triggered when dragging over list-item
         list.addEventListener('dragover', function (e) {
             e.preventDefault();
-            var courseType = getCourseType($(draggedItem).attr("id"))
-            if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType) {
-                $(this).attr("drop-active", true)
-            } else {
-                $(this).attr("drop-active", false)
+            if (draggedItem != null) {
+                var courseType = getCourseType($(draggedItem).attr("id"))
+                if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType) {
+                    $(this).attr("drop-active", true)
+                } else {
+                    $(this).attr("drop-active", false)
+                }
             }
         });
 
@@ -172,13 +185,15 @@ function makeListsDroppable() {
 
         // TODO: insert alphabetically rather than append
         list.addEventListener('drop', function (e) {
-            var courseType = getCourseType($(draggedItem).attr("id"))
-            if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType && 
-                $(draggedItem).parent().attr('id') != $(this).attr('id')) {
-                this.append(draggedItem);
-                saveLists()
+            if (draggedItem != null) {
+                var courseType = getCourseType($(draggedItem).attr("id"))
+                if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType && 
+                    $(draggedItem).parent().attr('id') != $(this).attr('id')) {
+                    this.append(draggedItem);
+                    saveLists()
+                }
+                $(this).removeAttr("drop-active")
             }
-            $(this).removeAttr("drop-active")
         });
 
         list.addEventListener('click', function(e) {
@@ -293,6 +308,7 @@ function clearLists() {
     removeClickFromLists()
     $(".list-item").remove()
     $(".list-searchbar").val("")
+    $(".input-addclass").val("")
     listData = {}
     classData = {}
 }
@@ -336,7 +352,7 @@ function loadLists(inputs) {
 function loadListsFromJSON(jsonString) {
     var listObj = JSON.parse(jsonString)
     listData = {}
-    courseData = {}
+    classData = {}
     for (const listID in listObj["lists"]) {
         var div = $("#" + listID)
         var courses = listObj["lists"][listID]
@@ -350,17 +366,6 @@ function loadListsFromJSON(jsonString) {
         })
         div.html(str)
     }
-    $(".list-searchbar").each( function() { 
-        let courseType = $(this).next().attr('id')
-        let prevInput = ""
-        $(this).bind("input", function(e) {
-            let inputText = $("#"+courseType+"Search").val()
-            if (inputText != prevInput) {
-                prevInput = inputText
-                filterLists(courseType) 
-            }
-        }) 
-    })
     makeItemsDraggable()
     makeItemsClickable()
 }
@@ -448,13 +453,6 @@ function updateLists(firstMajor, secondMajor, minor) {
         listData[courseType] = newCourses
         currDiv.html(str)
     }
-
-    $(".list-searchbar").each( function() { 
-        let courseType = $(this).parent().attr('id')
-        addEventListener("keyup", function(e) { 
-            filterLists(courseType) 
-        }) 
-    })
 
     makeItemsDraggable();
     makeItemsClickable();
@@ -544,4 +542,46 @@ function filterLists(courseType) {
             courseDiv.show()
         }
     });
+}
+
+// Add a class if it does not already exist in the schedule
+function addClass(input, list_id) {
+    console.log(list_id)
+    if (!(input)) {
+        console.log("input cannot be empty")
+        return
+    }
+    input = input.toUpperCase()
+    if (!(isValidInput(input))) {
+        console.log("input contains invalid characters or is too long")
+        return
+    }
+    if (input in classData) {
+        console.log("class already exists in current schedule")
+        return
+    }
+    let courses = []
+    if ("addedClass" in listData) {
+        courses = listData[list_id]
+    }
+    let courseType = "addedClass"
+    let courseName = input
+    let item = courseType+"_"+courseName.replace(/\s+/g, '+')
+    courses.push(item)
+    listData[courseType] = courses
+    classData[courseName] = courseType
+    let div = $("#"+list_id)
+    let str = '<div class="list-item '+courseType+'" draggable="true" id="'+item+'">'+courseName+'</div>'
+    div.append(str)
+    saveLists()
+    makeItemsClickable()
+    makeItemsDraggable()
+}
+
+function isValidInput(input) {
+    var letterNumber = /^[0-9a-zA-Z\s]+$/
+    if(input.length <= MAX_CLASS_LENGTH && input.match(letterNumber)) {
+        return true;
+    }
+    return false
 }
