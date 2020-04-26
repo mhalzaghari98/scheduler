@@ -81,7 +81,7 @@ select:focus {
 .filter {
 	margin: 6px;
 	padding: 4px;
-	min-width: 250px;
+	width: 250px;
 }
 
 #toolbar-container {
@@ -150,6 +150,7 @@ select:focus {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	width: 66vw;
 	padding-bottom: 16px;
 	box-shadow: 0px 2px 8px 2px #ccc;
 }
@@ -162,15 +163,11 @@ select:focus {
 	font-family: 'Monstserrat', sans-serif;
 	margin: 0px;
 	width: 100%;
-    background-color: rgba(0, 126, 255, 0.88);
+    background-color: rgb(92, 167, 245);
     color: white;
     padding: 6px 18px;
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
-}
-
-#classes-container {
-	width: 66vw;
 }
 
 .titles {
@@ -395,7 +392,6 @@ select:focus {
 }
 
 #schedule-container {
-	width: 66vw;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -429,10 +425,7 @@ select:focus {
 }
 
 @media (max-width: 1408px) {
-	#classes-container {
-		width: 80vw;
-	}
-	#schedule-container {
+	.main-container {
 		width: 80vw;
 	}
 }
@@ -444,22 +437,70 @@ select:focus {
 	#filter-container {
 		flex-direction: column;
 	}
-	.list {
+	.list-container {
 		margin: 0 12px;
 	}
 }
 
-@media (max-width: 720px) {
-	#classes-container {
-		width: 100vw;
-		padding: 0 16px;
+@media (max-width: 820px) {
+	.main-container {
+		width: 94vw;
 	}
-	#schedule-container {
-		width: 100vw;
-		padding: 0 12px;
-	}
-	.list {
+	.list-container {
 		margin: 0 8px;
 	}
-
+	header h1 {
+		font-size: 36px;
+	}
+	header h2 {
+		font-size: 20px;
+	}
+	header h3 {
+		font-size: 20px;
+	}
+	#degree-container {
+		font: bold 16px Sen, sans-serif; 
+	}
+	select {
+		font: bold 14px Sen, sans-serif;
+	}
+	.filter {
+		width: 200px;
+	}
+	#refresh-symbol {
+		height: 18px;
+		width: 22px;
+		margin: 4px;
+	}
+	#export-symbol {
+		height: 22px;
+		width: 22px;
+		margin: 4px;
+	}
+	#import-symbol {
+		height: 26px;
+		width: 26px;
+		margin: 4px 4px 4px 3px;
+	}
+	#image-symbol {
+		height: 24px;
+		width: 21px;
+		margin: 4px;
+	}
+	.toolbar-text {
+		font-size: 14px;
+	}
+	.class-lists {
+		height: 160px;
+	}
+	.smallTitle {
+		font-size: 16px;
+	}
+	.list-searchbar {
+		font-size: 14px;
+	}
+	.list-item {
+		font-size: 14px;
+		overflow-wrap: anywhere;
+	}
 }
