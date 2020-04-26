@@ -282,8 +282,10 @@ function makeItemsDraggable() {
 
         item.addEventListener('dragend', function () {
             setTimeout(function () {
-                draggedItem.style.display = 'block';
-                draggedItem = null;
+                if (draggedItem) {
+                    draggedItem.style.display = 'block';
+                    draggedItem = null;
+                }
             }, 0);
         })
     }
