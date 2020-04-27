@@ -63,6 +63,7 @@ $(document).ready(function() {
             $("#major2-dropdown").val(secondMajor)
             $("#minor-dropdown").val(minor)
             updateLists(firstMajor, secondMajor, minor)
+            updateResources()
             saveLists()
         }
     });
@@ -77,6 +78,7 @@ $(document).ready(function() {
         $("#major2-dropdown").val(secondMajor)
         $("minor-dropdown").val(minor)
         updateLists(firstMajor, secondMajor, minor)
+        updateResources()
         saveLists()
     });
 
@@ -90,6 +92,7 @@ $(document).ready(function() {
             $("#minor-dropdown").val(minor)
         }
         updateLists(firstMajor, secondMajor, minor)
+        updateResources()
         saveLists()
     })
 
@@ -103,6 +106,7 @@ $(document).ready(function() {
             $("#major2-dropdown").val(secondMajor)
         }
         updateLists(firstMajor, secondMajor, minor)
+        updateResources()
         saveLists()
     })
 
@@ -232,7 +236,22 @@ function makeListsDroppable() {
                 var courseType = getCourseType($(draggedItem).attr("id"))
                 if ($(this).hasClass("schedule-list") || $(this).attr("id") == courseType && 
                     $(draggedItem).parent().attr('id') != $(this).attr('id')) {
-                    this.append(draggedItem);
+                    let courseId = $(draggedItem).attr("id")
+                    let list_id = $(draggedItem).parent().attr("id")
+                    if (list_id in listData) {
+                        let index = listData[list_id].indexOf(courseId)
+                        if (index > -1) {
+                            listData[list_id].splice(index, 1)
+                        }
+                    }
+                    list_id = $(this).attr("id")
+                    let courses = []
+                    if (list_id in listData) {
+                        courses = listData[list_id]
+                    }
+                    courses.push(courseId)
+                    listData[list_id] = courses
+                    $(this).append(draggedItem)
                     saveLists()
                 }
                 $(this).removeAttr("drop-active")
@@ -242,7 +261,22 @@ function makeListsDroppable() {
         list.addEventListener('click', function(e) {
             if (clickedItem != null) {
                 if ($(this).attr("click-active") == "true") {
-                    this.append(clickedItem)
+                    let courseId = $(clickedItem).attr("id")
+                    let list_id = $(clickedItem).parent().attr("id")
+                    if (list_id in listData) {
+                        let index = listData[list_id].indexOf(courseId)
+                        if (index > -1) {
+                            listData[list_id].splice(index, 1)
+                        }
+                    }
+                    list_id = $(this).attr("id")
+                    let courses = []
+                    if (list_id in listData) {
+                        courses = listData[list_id]
+                    }
+                    courses.push(courseId)
+                    listData[list_id] = courses
+                    $(this).append(clickedItem)
                 }
                 $(clickedItem).removeClass('clicked')
                 $(this).removeAttr("click-active")
@@ -257,38 +291,53 @@ function makeListsDroppable() {
 // Removes the click-active attribute from lists
 function removeClickFromLists() {
     $('.list').removeAttr("click-active")
-    $(".addclass-container").show()
-    $(".removeclass").hide()
+    $(".addclass-container").css({
+        "margin": "4px 10px",
+        "padding": "2px 6px",
+        "height": "auto",
+        "width": "94%",
+        "border": "1px solid white",
+        "visibility": "visible"
+    })
+    $(".removeclass").css({
+        "margin": "0",
+        "padding": "0",
+        "height": "0",
+        "width": "0",
+        "border": "0",
+        "visibility": "hidden"
+    })
 }
 
 // Allows list-items to be draggable
 function makeItemsDraggable() {
     var list_items = $('.list-item');
-    
     for (let i = 0; i < list_items.length; i++) {
-        const item = list_items[i];
-
-        item.addEventListener('dragstart', function () {
-            if (clickedItem != null) {
-                removeClickFromLists()
-                $(clickedItem).removeClass('clicked')
-                clickedItem = null
-            }
-            draggedItem = item;
-            setTimeout(function () {
-                item.style.display = 'none';
-            }, 0)
-        });
-
-        item.addEventListener('dragend', function () {
-            setTimeout(function () {
-                if (draggedItem) {
-                    draggedItem.style.display = 'block';
-                    draggedItem = null;
-                }
-            }, 0);
-        })
+        makeItemDraggable(list_items[i])
     }
+}
+
+function makeItemDraggable(item) {
+    $(item).on('dragstart', function (e) {
+        if (clickedItem != null) {
+            removeClickFromLists()
+            $(clickedItem).removeClass('clicked')
+            clickedItem = null
+        }
+        draggedItem = item;
+        setTimeout(function () {
+            item.style.display = 'none';
+        }, 0)
+    });
+
+    $(item).on('dragend', function (e) {
+        setTimeout(function () {
+            if (draggedItem) {
+                draggedItem.style.display = 'block';
+                draggedItem = null;
+            }
+        }, 0);
+    })
 }
 
 // Allows list-items to be clickable, for click and drop
@@ -298,42 +347,60 @@ function makeItemsClickable() {
     for (let i = 0; i < list_items.length; i++) {
         const item = list_items[i];
 
-        item.addEventListener('click', function (e) {
-            if (clickedItem != null) {
-                $(clickedItem).removeClass('clicked')
-                if (clickedItem == item || $(item).parent().attr("click-active") == "false") {
-                    clickedItem = null
-                    removeClickFromLists()
-                    return
-                }
-                if ($(item).parent().attr("click-active") == "true") {
-                    return
-                }
-            }
-            e.stopPropagation()
-            clickedItem = item;
-            $(clickedItem).addClass('list-item clicked')
-            var parentList = $(clickedItem).parent()
-            removeClickFromLists()
-
-            // Hide add class button from current list, and show remove class button
-            parentList.siblings(".addclass-container").hide()
-            parentList.siblings(".removeclass").show()
-
-            var lists = $('.list');
-            for (let j = 0; j < lists.length; j ++) {
-                const list = lists[j]
-                var courseType = getCourseType($(clickedItem).attr("id"))
-                if ($(list).attr('id') != parentList.attr('id')) {
-                    if ($(list).hasClass("schedule-list") || $(list).attr("id") == courseType) {
-                        $(list).attr('click-active', true)
-                    } else {
-                        $(list).attr('click-active', false)
-                    }
-                }
-            }
-        });
+        makeItemClickable(item)
     }
+}
+
+function makeItemClickable(item) {
+    $(item).click(function(e) {
+        if (clickedItem != null) {
+            $(clickedItem).removeClass('clicked')
+            if (clickedItem == item || $(item).parent().attr("click-active") == "false") {
+                clickedItem = null
+                removeClickFromLists()
+                return
+            }
+            if ($(item).parent().attr("click-active") == "true") {
+                return
+            }
+        }
+        e.stopPropagation()
+        clickedItem = item;
+        $(clickedItem).addClass('list-item clicked')
+        var parentList = $(clickedItem).parent()
+        removeClickFromLists()
+
+        // Hide add class button from current list, and show remove class button
+        parentList.siblings(".addclass-container").css({
+            "margin": "0",
+            "padding": "0",
+            "height": "0",
+            "width": "0",
+            "border": "0",
+            "visibility": "hidden"
+        })
+        parentList.siblings(".removeclass").css({
+            "margin": "4px 10px",
+            "padding": "4px 6px",
+            "height": "auto",
+            "width": "94%",
+            "border": "1px solid rgb(190, 190, 190)",
+            "visibility": "visible"
+        })
+
+        var lists = $('.list');
+        let courseType = getCourseType($(clickedItem).attr("id"))
+        for (let j = 0; j < lists.length; j ++) {
+            const list = lists[j]
+            if ($(list).attr('id') != parentList.attr('id')) {
+                if ($(list).hasClass("schedule-list") || $(list).attr("id") == courseType) {
+                    $(list).attr('click-active', true)
+                } else {
+                    $(list).attr('click-active', false)
+                }
+            }
+        }
+    })
 }
 
 // Returns cache key, a combination of all the dropdown values
@@ -360,6 +427,9 @@ function clearLists() {
     $(".list-item").remove()
     $(".list-searchbar").val("")
     $(".input-addclass").val("")
+    $(".links-list-container.custom").css("display", "none")
+    $(".links-list-container.custom").children().html("")
+    updateResources()
     listData = {}
     classData = {}
 }
@@ -434,9 +504,9 @@ function updateLists(firstMajor, secondMajor, minor) {
 
     // Populate the lists using the data Object created from the json file
     // Each currDiv corresponds to a list_id (#lowerDivs, #upperDivs, etc)
-    var majorObj = data["majors"][firstMajor]
+    var majorObj = data["majors"][firstMajor]["classes"]
     if (isSecondMajor()) {
-        var majorObj2 = data["majors"][secondMajor]
+        var majorObj2 = data["majors"][secondMajor]["classes"]
     }
     for (const courseType in majorObj) {
         let currDiv = $("#" + courseType)
@@ -507,6 +577,62 @@ function updateLists(firstMajor, secondMajor, minor) {
 
     makeItemsDraggable();
     makeItemsClickable();
+}
+
+// Update resources
+function updateResources() {
+    let firstMajor = $("#major-dropdown option:selected").text()
+    let secondMajor = $("#major2-dropdown option:selected").text()
+    let minor = $("#minor-dropdown option:selected").text()
+    let titleDiv = $("#major1-links").children(".link-container-title")
+    let listDiv = $("#major1-links").children(".links-list")
+    if ("resources" in data["majors"][firstMajor]) {
+        resources = data["majors"][firstMajor]["resources"]
+        titleDiv.html(firstMajor + " Resources")
+        s = ""
+        for (const linkTitle in resources) {
+            s += "<li class='link-item'><a href='"+resources[linkTitle]["link"]+"' target='blank'>"+linkTitle+"</a>"+
+                "<div class='link-description'>"+resources[linkTitle]["description"]+"</div></li>"
+        }
+        listDiv.html(s)
+        $("#major1-links").css("display", "flex")
+    } else {
+        $("#major1-links").css("display", "none")
+    }
+    if (isSecondMajor()) {
+        titleDiv = $("#major2-links").children(".link-container-title")
+        listDiv = $("#major2-links").children(".links-list")
+        if ("resources" in data["majors"][secondMajor]) {
+            resources = data["majors"][secondMajor]["resources"]
+            titleDiv.html(secondMajor + " Resources")
+            s = ""
+            for (const linkTitle in resources) {
+                s += "<li class='link-item'><a href='"+resources[linkTitle]["link"]+"' target='blank'>" + linkTitle + "</a>"+
+                    "<div class='link-description'>"+resources[linkTitle]["description"]+"</div></li>"
+            }
+            listDiv.html(s)
+            $("#major2-links").css("display", "flex")
+        } else {
+            $("#major2-links").css("display", "none")
+        }
+    }
+    if (isMinor()) {
+        titleDiv = $("#minor-links").children(".link-container-title")
+        listDiv = $("#minor-links").children(".links-list")
+        if ("resources" in data["minors"][minor]) {
+            resources = data["minors"][minor]["resources"]
+            titleDiv.html(minor + " Resources")
+            s = ""
+            for (const linkTitle in resources) {
+                s += "<li class='link-item'><a href='"+resources[linkTitle]["link"]+"' target='blank'>" + linkTitle + "</a>"+
+                    "<div class='link-description'>"+resources[linkTitle]["description"]+"</div></li>"
+            }
+            listDiv.html(s)
+            $("#minor-links").css("display", "flex")
+        } else {
+            $("#minor-links").css("display", "none")
+        }
+    }
 }
 
 // Clears the cache, updates the list with the selected majors
@@ -612,37 +738,37 @@ function addClass(input, list_id) {
         return
     }
     let courses = []
-    if ("addedClass" in listData) {
+    if (list_id in listData && listData[list_id] != undefined) {
         courses = listData[list_id]
     }
     let courseType = "addedClass"
     let courseName = input
     let item = courseType+"_"+courseName.replace(/\s+/g, '+')
     courses.push(item)
-    listData[courseType] = courses
+    listData[list_id] = courses
     classData[courseName] = courseType
     let div = $("#"+list_id)
     let str = '<div class="list-item '+courseType+'" draggable="true" id="'+item+'">'+courseName+'</div>'
     div.append(str)
+    let courseId = $.escapeSelector(item)
+    makeItemClickable($("#"+courseId))
+    makeItemDraggable($("#"+courseId))
     saveLists()
-    makeItemsClickable()
-    makeItemsDraggable()
 }
 
 function removeCourse() {
     let courseId = $(clickedItem).attr('id')
     let courseName = getCourseName(courseId)
     let courseType = getCourseType(courseId)
-    if (courseType in listData) {
-        let index = listData[courseType].indexOf(courseId)
+    let list_id = $(clickedItem).parent().attr("id")
+    if (list_id in listData) {
+        let index = listData[list_id].indexOf(courseId)
         if (index > -1) {
-            listData[courseType].splice(index, 1)
+            listData[list_id].splice(index, 1)
         }
     }
     if (courseType === "addedClass") {
-        console.log(courseName)
         if (courseName in classData) {
-            console.log(courseName)
             delete classData[courseName]
         }
         $("#"+$.escapeSelector(courseId)).remove()
@@ -670,7 +796,4 @@ function displayError(msg) {
     s = "Error: " + msg
     errMsgDiv.html(s)
     errDiv.css("display", "flex")
-    $([document.documentElement, document.body]).animate({
-        scrollTop: 0
-    }, 500);
 }
