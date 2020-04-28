@@ -124,10 +124,10 @@ $(document).ready(function() {
         linkContainer = $(this).parent()
         if (linkContainer.hasClass("expanded")) {
             linkContainer.removeClass("expanded")
-            $(this).html("Resource List &#xf196;")
+            $(this).html("Resource List <div class='expand-symbol'> &#xf078;</div>")
         } else {
             linkContainer.addClass("expanded")
-            $(this).html("Resource List &#xf147;")
+            $(this).html("Resource List <div class='expand-symbol'>&#xf077;</div>")
         }
         $("#link-wrapper").stop().slideToggle(400)
     })

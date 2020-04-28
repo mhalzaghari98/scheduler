@@ -210,6 +210,10 @@ select:focus {
 }
 
 .links-title {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
 	width: 100%;
 	font-size: 16px;
 	font-weight: 550;
@@ -217,6 +221,11 @@ select:focus {
 	background-color: #eeeeee;
 	font-family: Montserrat, FontAwesome, sans-serif;
 	padding: 4px;
+}
+
+.expand-symbol {
+	padding: 0px 8px 1px 8px;
+	font-size: 12px;
 }
 
 .links-title:hover {
