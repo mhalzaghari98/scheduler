@@ -194,16 +194,38 @@ select:focus {
     border-top-right-radius: 12px;
 }
 
+.main-title h2 {
+	font-weight: 600;
+}
+
 .links-container {
 	margin: 12px 0px;
-	padding: 0px 24px;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	justify-content: flex-start;
 	align-items: center;
 	width: 60vw;
 	border-top: 3px double lightgray;
 	border-bottom: 3px double lightgray;
+}
+
+.links-title {
+	width: 100%;
+	font-size: 16px;
+	font-weight: 550;
+	text-align: center;
+	background-color: #eeeeee;
+	font-family: Montserrat, FontAwesome, sans-serif;
+	padding: 4px;
+}
+
+.links-title:hover {
+	cursor: pointer;
+}
+
+#link-wrapper {
+	display: none;
+	padding: 0px 24px;
 }
 
 .links-list-container {
@@ -214,13 +236,11 @@ select:focus {
 	padding: 12px 0px;
 }
 
-#major1-links, #major2-links, #minor-links {
-	display: none;
-}
-
 .link-container-title {
-	font-size: 24px;
+	font-size: 20px;
 	padding: 2px 0;
+	font-family: Montserrat, sans-serif;
+	font-weight: 500;
 	text-decoration: underline;
 	text-align: center;
 }
